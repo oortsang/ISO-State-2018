@@ -52,16 +52,10 @@ class EventLabel {
 }
 
 class ScheduleData {
-    static var soEvents : [EventLabel] = []
-    static var schedEvents : [EventLabel] = [] //arrange by date
-    /*
-    static func updateHomerooms(dataFile: CSVFile) {
-        guard dataFile.file != "" else {return} //don't want the file to be empty!
-        ScheduleData.homeroomList = getCol(array: dataFile.data, col: 1) as! [String]
-        ScheduleData.homeroom = ScheduleData.homeroomList[EventsData.teamNumber()-1]
-        dataFile.save(name: "homerooms")
-    }
-    */
+    static var selectedSOEvents: [EventLabel] = []
+    static var completeSOEvents: [EventLabel] = []
+    static var schedEvents: [EventLabel] = [] //arrange by date...
+
     
     //returns a list of events in chronological/alphabetical order
     static func orderEvents(eventList: [EventLabel]) -> [EventLabel] {
@@ -184,4 +178,17 @@ class ScheduleData {
         }
         return result
     }
+    
+    //retrieves the event in the complete SOEvent list that matches requested event number
+    //there *should* only be one result, but this only returns the first
+    static func getEventFromNumber(evNum: Int, completeList: Bool = true) -> EventLabel? {
+        let events = completeList ? ScheduleData.completeSOEvents : ScheduleData.selectedSOEvents
+        for event in events {
+            if event.num == evNum {
+                return event
+            }
+        }
+        return nil
+    }
+    
 }

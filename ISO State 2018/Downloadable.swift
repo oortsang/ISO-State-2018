@@ -70,18 +70,22 @@ class Downloadable {
             self.files[i].parse()
         }
         //put into proper places
+        let eventNumbers = (getCol(array: self.files[0].data, col: 0) as! [String]).map{Int($0)!}
+        EventsData.soEventNumbers = eventNumbers
         EventsData.completeSOEventList = getCol(array: self.files[0].data, col: 1) as! [String]
         EventsData.soEventProperties = (self.files[0].data as [[String]]).map{
             $0[2...].map{stringToBool(s: $0)}
         }
         EventsData.roster = getCol(array: self.files[1].data, col: 2) as! [String]
         EventsData.homerooms = getCol(array: self.files[1].data, col: 3) as! [String]
+        //EventsData.soEventLookup = Array<(Int, String)>(zip(eventNumbers, EventsData.completeSOEventList))
+        
         self.prepareSOEvents()
         self.prepareSchedEvents()
         self.prepareLocations()
     }
     
-    //load the scioly events from the downloaded/loaded CSVs into ScheduleData.soEvents
+    //load the scioly events from the downloaded/loaded CSVs into ScheduleData.completeSOEvents
     func prepareSOEvents() -> Void {
         var tmp: [EventLabel] = []
         //add contributions from file 2, testing events
@@ -103,7 +107,7 @@ class Downloadable {
             let evNum = Int(info[0])!
             let (evName, loc) = (info[1], info[3])
             let locCode = Int(info[4]) ?? -1
-            let ind = 4+EventsData.currentSchool
+            let ind = 4+EventsData.teamNumber()
             let tmpTime = ind>=info.count ? "?" : info[ind] //not pretty yet
             let evTime = ScheduleData.formatTime(time: tmpTime, duration: Int(info[2])!)!
             let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
@@ -119,7 +123,7 @@ class Downloadable {
             let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }
-        ScheduleData.soEvents = ScheduleData.orderEvents(eventList: tmp) //reordered by time
+        ScheduleData.completeSOEvents = ScheduleData.orderEvents(eventList: tmp) //reordered by time
     }
     
     func prepareSchedEvents() -> Void {

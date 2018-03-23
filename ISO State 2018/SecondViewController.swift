@@ -41,7 +41,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         updateSchoolAndTable()
         
-        //NotificationCenter.default.addObserver(self, selector: #selector(updateSchoolAndTable), name: .reloadSchoolName, object: nil)
+
         NotificationCenter.default.addObserver(self, selector: #selector(onDownloadSummoned), name: .downloadFinished, object: nil)
         
         //extra detail by tapping on a cell
@@ -73,7 +73,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    //on download finish (note: does not update view)
+    //on download finish
     @objc func onDownloadSummoned () {
         DLM.dlFiles.finishUpdate()
         updateSchoolAndTable()
@@ -89,16 +89,23 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
                 ScheduleData.updateHomerooms(dataFile: DLM.dlFiles.homerooms)
             }*/
             
-            let sNumber = EventsData.currentSchool
+            let cNum = EventsData.currentSchool
             var currentHomeroom: String
-            if DLM.dlFiles.homerooms.data.count > sNumber && sNumber >= 0 {
-                currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
+            var currentHomeroomLocCode: Int
+            let homeroomNames = getCol(array:DLM.dlFiles.files[0].data, col:3) as! [String]
+            let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[0].data, col:4) as! [String]).map{Int($0)}
+            if homeroomNames.count > cNum && cNum >= 0 {
+                //currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
+                currentHomeroom = homeroomNames[cNum]
+                currentHomeroomLocCode = homeroomLocCodes[cNum]!
             } else {
                 currentHomeroom = "Not currently available..."
+                currentHomeroomLocCode = -1
             }
-            self.schoolTitle.text = "Viewing as: (\(sNumber)) \(EventsData.roster[sNumber])"
+            self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber()) \(EventsData.roster[cNum])"
             self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
-            saveSelectedSchool(currentSchool: sNumber)
+            EventsData.currentHomeroomLocCode = currentHomeroomLocCode
+            saveSelectedSchool(currentSchool: cNum)
             
             //update the table itself
             self.updateEvents()
@@ -109,66 +116,45 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     
-    //put the events back into ScheduleData.events so that it can be nicely formatted
+    //put the events back into ScheduleData.selectedSOEvents so that it can be nicely formatted
+    //we may have loaded the selected events in EventsData (via core data)
     func updateEvents() {
         var elList: [EventLabel] = []
-        if DLM.dlFiles.testEvents.file == "" {return}
-        //for elm in EventsData.selectedList {
-        //    let i = EventsData.selectedList.index(of: elm)!
-        for i in 0..<EventsData.selectedList.count {
-            let elm = EventsData.selectedList[i]
-            // make sure no index-out-of-bounds error for `loc`
-            if DLM.dlFiles.testEvents.data.count <= i+1 {
-                return
-            } else if DLM.dlFiles.testEvents.data[i+1].count <= 5 {
-                return
-            }
-            let loc = DLM.dlFiles.testEvents.data[i+1][5]
-
-            var time = "?"
-            
-            //check for build events
-            if (EventsData.isSelfScheduled(evnt: elm)) {
-                //lookup from build event file
-                let teamNumber = EventsData.teamNumber()!
-                let j = 1+EventsData.selfScheduled.index(of: elm)!
-                //print("Trying to access: team number \(teamNumber) for the \(j)th event")
-                time = ScheduleData.cleanTime(time: DLM.dlFiles.buildEvents.data[j][teamNumber])
-            } else {
-                let teamBlock =  Int(ceil(Float(EventsData.currentSchool)/10)) //1-10,11-20,21-30,31-40
-                time = ScheduleData.cleanTime(time: DLM.dlFiles.testEvents.data[i+1][teamBlock])
-            }
-            //print(time)
-            let tmp = EventLabel(name: elm, loc: loc, time: time)
-            elList.append(tmp)
+        //if any of these are empty, this process is not ready
+        if DLM.dlFiles.files[0].file == ""
+            || DLM.dlFiles.files[2].file == ""
+            || DLM.dlFiles.files[3].file == ""
+            || DLM.dlFiles.files[4].file == ""
+        {
+            return
         }
-        ScheduleData.soEvents = ScheduleData.orderEvents(eventList: elList)
-        
+        for i in 0..<EventsData.selectedList.count { //for each active event, as accounted by EventsData
+            let evnc: Int = EventsData.selectedList[i] //event number code
+            let newEvLab: EventLabel = ScheduleData.getEventFromNumber(evNum: evnc)!
+            elList.append(newEvLab)
+        }
+        ScheduleData.selectedSOEvents = ScheduleData.orderEvents(eventList: elList)
         //print("At the end of updateEvents, there are \(ScheduleData.events.count) events")
     }
     
     //MARK: mostly boring table management stuff below this point
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return ScheduleData.earlyEvents.count + EventsData.impoundList().count
-        case 2:
-            return ScheduleData.lateEvents.count
-        default:
-            return EventsData.selectedList.count //the meat and potatoes
-        }
+        return ScheduleData.selectedSOEvents.count //the meat and potatoes
     }
     
     //give labels to the cells
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //print("Getting Knowledge from section \(indexPath.section), I see...")
         var cell = tableView.dequeueReusableCell(withIdentifier: "schedule", for: indexPath)
-        let section = indexPath.section
+        
+        cell = (ScheduleData.selectedSOEvents[indexPath.row] as EventLabel).printCell(cell: cell)
+        
+        /*let section = indexPath.section
         switch section {
         case 0:
             //print(indexPath.row)
@@ -207,18 +193,19 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             break
         default:
             // check that ScheduleData.events is not empty
-            if ScheduleData.soEvents.count == 0 {
+            if ScheduleData.completeSOEvents.count == 0 {
                 cell.textLabel!.text = "???"
                 cell.detailTextLabel!.text = "pls connect to the internet :|"
             }
             // check that we actually have a testEvents file
             else if DLM.dlFiles.testEvents.file == "" || DLM.dlFiles.buildEvents.file == "" {
-                cell.textLabel!.text = (ScheduleData.soEvents[indexPath.row] as EventLabel).name
+                cell.textLabel!.text = (ScheduleData.completeSOEvents[indexPath.row] as EventLabel).name
                 cell.detailTextLabel!.text = "Entry not found: Please connect to internet"
             } else {
                 cell = (ScheduleData.events[indexPath.row] as EventLabel).printCell(cell: cell)
             }
         }
+        */
         return cell
     }
 }

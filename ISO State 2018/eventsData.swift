@@ -14,12 +14,18 @@ let context = appDelegate.persistentContainer.viewContext
 let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Events")
 
 class EventsData: NSObject {
-    static var selectedList:[String] = [] //for the events on the event picker
-    static var completeSOEventList:[String] = [] //can be replaced
-    static var soEventProperties:[[Bool]] = [] //store trial, test, self-scheduled, impound info
-    static var roster:[String] = [] //load up outside
-    static var currentSchool = 0 //int instead of string; also replaces teamNumber()
+    static var selectedList: [Int] = [] //for the events on the event picker; store as an index of EventsData.completeSOEventList
+    static var completeSOEventList: [String] = []
+    static var soEventNumbers: [Int] = [] //stores the Event Numbers in the same order as they appear in ED.copmleteSOEventList
+    static var soEventProperties: [[Bool]] = [] //store division (if C), trial, test, self-scheduled, impound info
+    static var roster: [String] = [] //load up outside
+    static var currentSchool = 0 //This is actually different from the team number because of the fact that there's division B and C -- use a unique identifier internally
+    static var currentHomeroomLocCode = -1//fill externally
     static var homerooms:[String] = [] //can do homerooms[currentSchool]
+    
+    static func teamNumber() -> Int {
+        return Int(DLM.dlFiles.files[1].data[currentSchool][0])!
+    }
     
     //get current division as a bool: true for C, false for B
     static func currentlyDivC() -> Bool {
@@ -90,6 +96,11 @@ class EventsData: NSObject {
     static func isImpounded(evnt: Int) -> Bool? {
         return thisEvent(evnt: evnt, has: true, prop: 4)
     }
+    
+    static func lookupEventName(evNumber: Int) -> String! {
+        let i = EventsData.soEventNumbers.index(of: evNumber) //the event name will be in the ith position
+        return EventsData.completeSOEventList[i!]
+    }
 }
 
 func stringToBool(s: String) -> Bool {
@@ -103,10 +114,10 @@ func loadEvents() -> Void {
     do {
         let results = try context.fetch(request)
         if results.count > 0 {
-            var tmpRes = [String]()
+            var tmpRes = [Int]()
             for result in results {
-                if let eventName = (result as AnyObject).value(forKey:"event") as? String {
-                    tmpRes.append(eventName)
+                if let eventNum = (result as AnyObject).value(forKey:"event") as? Int {
+                    tmpRes.append(eventNum)
                 }
             }
             EventsData.selectedList = tmpRes
@@ -120,7 +131,7 @@ func loadEvents() -> Void {
 //Dumps everything to storage
 func firstSaveEvents() -> Void {
     for eachEvent in EventsData.selectedList {
-        addEvent(eventName: eachEvent)
+        addEvent(eventNum: eachEvent)
     }
 }
 
@@ -128,15 +139,25 @@ func firstSaveEvents() -> Void {
 func saveEvents() -> Void {
     clearEvents() //for convenience
     for eachEvent in EventsData.selectedList {
-        addEvent(eventName: eachEvent)
+        addEvent(eventNum: eachEvent)
     }
 }
 
 
-//add an event with CoreData
-func addEvent(eventName: String) -> Void {
+//add an event with CoreData as well as EventsData and ScheduleData lists
+//eventNum  is the internal event number code (converted when added in ModalEventPicker.swift)
+func addEvent(eventNum: Int) -> Void {
+    //adds to EventsData version
+    EventsData.selectedList.append(eventNum)
+    
+    //add to ScheduleData list
+    //let evNum = Int(DLM.dlFiles.files[0].data[eventNum][0])!
+    let evLabel = ScheduleData.getEventFromNumber(evNum: eventNum)!
+    ScheduleData.selectedSOEvents.append(evLabel)
+    
+    //save to CoreData
     let newEventThing = NSEntityDescription.insertNewObject(forEntityName: "Events", into: context)
-    newEventThing.setValue (eventName, forKey: "event")
+    newEventThing.setValue (eventNum, forKey: "event")
     do {
         try context.save()
         print("Saved!")
@@ -147,10 +168,22 @@ func addEvent(eventName: String) -> Void {
 }
 
 //removes the first occurrence of an event
-func removeEvent(eventName: String, indexPath: IndexPath) -> Bool {
+func removeEvent(eventNum: Int, indexPath: IndexPath) -> Bool {
+    
+    //remove from ScheduleData.selectedSOEvents
+    for i in 0..<ScheduleData.selectedSOEvents.count {
+        if eventNum == ScheduleData.selectedSOEvents[i].num {
+            ScheduleData.selectedSOEvents.remove(at: i)
+            break
+        }
+    }
+    
+    //remove from EventsData.selectedList
     EventsData.selectedList.remove(at: indexPath.row)
+    
+    //remove from Core Data storage
     let tmp = request.predicate
-    request.predicate = NSPredicate(format: "event = %@", eventName) //??
+    request.predicate = NSPredicate(format: "event = %@", eventNum) //??
     var res : Bool = false
     do {
         let results = try context.fetch(request) as? [NSManagedObject]
@@ -161,7 +194,7 @@ func removeEvent(eventName: String, indexPath: IndexPath) -> Bool {
             res = true
         }
     } catch {
-        print("Something went wrong deleting the event \(eventName)")
+        print("Something went wrong deleting the event #\(eventNum)")
     }
     request.predicate = tmp //undo what just happened
     return res

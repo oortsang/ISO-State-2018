@@ -53,7 +53,8 @@ class TableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-        cell.textLabel!.text = EventsData.selectedList[indexPath.row]
+        // This might be sketchy
+        cell.textLabel!.text = EventsData.completeSOEventList[EventsData.selectedList[indexPath.row]]
         return cell
     }
     
@@ -65,9 +66,11 @@ class TableViewController: UITableViewController {
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Delete the row from the data source as well as core data
-            let delEvent = tableView.cellForRow(at: indexPath)!.textLabel!.text!
-            _ = removeEvent(eventName: delEvent, indexPath: indexPath)
+            //let delEvent = tableView.cellForRow(at: indexPath)!.textLabel!.text!
+            
+            //delEvent is the event number found by lookup
+            let delEvent = EventsData.selectedList[indexPath.row]
+            _ = removeEvent(eventNum: delEvent, indexPath: indexPath)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
         //sendNotificationToUpdateSched()
@@ -75,7 +78,7 @@ class TableViewController: UITableViewController {
     
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-        let eventA = EventsData.selectedList[fromIndexPath.row]
+        let eventA = EventsData.selectedList[fromIndexPath.row] //this is okay because the list is sipmly EventsData.selectedList
         EventsData.selectedList.remove(at: fromIndexPath.row)
         EventsData.selectedList.insert(eventA, at: to.row)
         saveEvents() //preserve order
@@ -90,7 +93,7 @@ class TableViewController: UITableViewController {
     //get rid of duplicate entries
     //also saves to disk
     func cleanDuplicates() {
-        var tmp: [String] = [] //will store the new string
+        var tmp: [Int] = [] //will store the new string
         for ev in EventsData.selectedList {
             if !tmp.contains(ev) {
                 tmp.append(ev)
@@ -106,8 +109,6 @@ class TableViewController: UITableViewController {
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
         saveEvents()
     }
  

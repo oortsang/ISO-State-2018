@@ -36,28 +36,23 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
     //add the current selection into the events list
     @IBAction func addButton(_ sender: Any) {
         let row = eventPicker.selectedRow(inComponent: 0)
-        let newEvent = EventsData.completeSOEventList[row]
-        if !(EventsData.selectedList.contains(newEvent)) {
-            print("\(newEvent) added!")
-            EventsData.selectedList.append(newEvent)
-            addEvent(eventName: newEvent)
-            //NotificationCenter.default.post(name: .reloadSchoolName, object: nil)
-            
+        let eventNum = row //UPDATE FOR DIV B/C
+        if !(EventsData.selectedList.contains(eventNum)) {
+            //print("\(EventsData.completeSOEventList[eventNum]) added!")
+            addEvent(eventNum: eventNum) //save to disk and ED and SD classes
             cancelButton(addButton)
         } else {
-            let alert = UIAlertController(title: "Event Seletion", message: "You've already selected this event", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Event Selection", message: "You've already selected this event", preferredStyle: .alert)
             alert.addAction(
                 UIAlertAction(title:
                     NSLocalizedString("Ok", comment: "Default action"),
                     style: .default)
             )
             self.present(alert, animated: true, completion: nil)
-            //how to execute something after user presses ok??
         }
     }
 
     @IBAction func cancelButton(_ sender: Any) {
-        //print(EventsData.selectedList)
         //sendNotificationToUpdate()
         self.dismiss(animated: true, completion: nil)
     }
