@@ -22,8 +22,11 @@
 		BA2370F91FFC05E4006AD5E0 /* Downloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2370F81FFC05E4006AD5E0 /* Downloadable.swift */; };
 		BA2370FB1FFC0ED9006AD5E0 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2370FA1FFC0ED9006AD5E0 /* Notifications.swift */; };
 		BA3765831FF5C39C008C4A63 /* DataStorage.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = BA3765821FF5C39C008C4A63 /* DataStorage.xcdatamodel */; };
+		BA79CB8F20633B5100B1FBFA /* Downloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2370F81FFC05E4006AD5E0 /* Downloadable.swift */; };
+		BA79CB9020633B5200B1FBFA /* Downloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2370F81FFC05E4006AD5E0 /* Downloadable.swift */; };
 		BA8AD9A61FF570EC008BA972 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8AD9A51FF570EC008BA972 /* TableViewController.swift */; };
 		BA8AD9CF1FF5BA03008BA972 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA8AD9CE1FF5BA03008BA972 /* CoreData.framework */; };
+		BA9BAE4520640C5D0021A218 /* DLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9BAE4420640C5D0021A218 /* DLManager.swift */; };
 		BAC890411FFAEE8B004B05CC /* ScheduleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC8903E1FFAEE8B004B05CC /* ScheduleData.swift */; };
 		BAC890421FFAEE8B004B05CC /* eventsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC8903F1FFAEE8B004B05CC /* eventsData.swift */; };
 		BAC890431FFAEE8B004B05CC /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC890401FFAEE8B004B05CC /* Locations.swift */; };
@@ -71,6 +74,7 @@
 		BA3765821FF5C39C008C4A63 /* DataStorage.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; name = DataStorage.xcdatamodel; path = UCSO_Invitational_2018.xcdatamodeld/DataStorage.xcdatamodel; sourceTree = "<group>"; };
 		BA8AD9A51FF570EC008BA972 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		BA8AD9CE1FF5BA03008BA972 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		BA9BAE4420640C5D0021A218 /* DLManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLManager.swift; sourceTree = "<group>"; };
 		BAC8903E1FFAEE8B004B05CC /* ScheduleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleData.swift; sourceTree = "<group>"; };
 		BAC8903F1FFAEE8B004B05CC /* eventsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eventsData.swift; sourceTree = "<group>"; };
 		BAC890401FFAEE8B004B05CC /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
@@ -177,6 +181,7 @@
 				BAC8904B1FFB079D004B05CC /* CSVFile.swift */,
 				BA2370F81FFC05E4006AD5E0 /* Downloadable.swift */,
 				BA2370FA1FFC0ED9006AD5E0 /* Notifications.swift */,
+				BA9BAE4420640C5D0021A218 /* DLManager.swift */,
 			);
 			name = "Data Handling";
 			sourceTree = "<group>";
@@ -352,6 +357,7 @@
 				BAC890421FFAEE8B004B05CC /* eventsData.swift in Sources */,
 				BA1026C91FDDFC8D00D16FBD /* SecondViewController.swift in Sources */,
 				BAC890411FFAEE8B004B05CC /* ScheduleData.swift in Sources */,
+				BA9BAE4520640C5D0021A218 /* DLManager.swift in Sources */,
 				BA1567651FF5F6CF00A49D65 /* ModalEventPicker.swift in Sources */,
 				BAC8904C1FFB079D004B05CC /* CSVFile.swift in Sources */,
 				BA1567631FF5DEBE00A49D65 /* LaunchScreen.swift in Sources */,
@@ -370,6 +376,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA1026DC1FDDFC8D00D16FBD /* UCSO_Invitational_2018Tests.swift in Sources */,
+				BA79CB8F20633B5100B1FBFA /* Downloadable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +385,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA1026E71FDDFC8D00D16FBD /* UCSO_Invitational_2018UITests.swift in Sources */,
+				BA79CB9020633B5200B1FBFA /* Downloadable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

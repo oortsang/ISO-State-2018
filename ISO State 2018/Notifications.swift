@@ -1,3 +1,4 @@
+/*
 //
 //  Notifications.swift
 //  UCSO Invitational 2018
@@ -11,6 +12,7 @@ import Foundation
 //Keeping track of notifications
 extension Notification.Name {
     static let downloadFinished = Notification.Name("downloadFinished")
-    static let reload = Notification.Name("reload")
-    static let reloadSchoolName = Notification.Name("reloadSchool")
+    //static let reload = Notification.Name("reload")
+    //static let reloadSchoolName = Notification.Name("reloadSchool")
 }
+*/

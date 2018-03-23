@@ -10,8 +10,10 @@ import Foundation
 import MapKit
 import CoreLocation
 
-
-let locList: [(String, String, Double, Double)]
+class Locs {
+    static var locList: [(String, String, Double, Double, Double)] = [] //middle entry is the code
+}
+/*let locList: [(String, String, Double, Double)]
     = [ ("BSLC", "Biological Sciences Learning Center", 41.7918, -87.6026288),
         ("Hinds", "Hinds Geophysical Sciences Center", 41.7902933, -87.6016511),
         ("Crerar+CSIL", "Crerar Library (contains Computer Science Instructional Laboratory)", 41.790225, -87.602556),
@@ -26,17 +28,17 @@ let locList: [(String, String, Double, Double)]
         ("Cobb", "Cobb Lecture Hall", 41.788996, -87.600854),
         ("Reg", "The Joseph Regenstein Library", 41.792279, -87.599954),
         ("Stuart", "Stuart Hall", 41.788608, -87.598713)
-    ]
+    ]*/
 
 struct MyList {
     static var locPoints = [MKPointAnnotation]()
     
     static func initiate() -> Void {
-        for elm in locList{
+        for elm in Locs.locList{
             let an = MKPointAnnotation()
             an.title = elm.0
             an.subtitle = elm.1
-            an.coordinate = CLLocationCoordinate2DMake(elm.2, elm.3)
+            an.coordinate = CLLocationCoordinate2DMake(elm.3, elm.4)
             locPoints.append(an)
         }
     }

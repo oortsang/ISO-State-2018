@@ -14,32 +14,87 @@ let context = appDelegate.persistentContainer.viewContext
 let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Events")
 
 class EventsData: NSObject {
-    static var list:[String] = []
-    static let completeList = ["Anatomy & Physiology", "Astronomy", "Chemistry Lab", "Disease Detectives", "Dynamic Planet", "Ecology", "Experimental Design", "Fermi Questions", "Forensics", "Game On", "Helicopters", "Herpetology", "Hovercraft", "Materials Science", "Microbe Mission", "Mission Possible", "Mousetrap Vehicle", "Optics", "Remote Sensing", "Rocks & Minerals", "Thermodynamics", "Towers", "Write It Do It", "Density Lab (Trial)", "Picture This (Trial)"]
-    static let selfScheduled = ["Helicopters", "Hovercraft", "Mission Possible", "Mousetrap Vehicle", "Towers"]
-    static var currentSchool = "Sylvania Southview High School - Team A"
-    static let roster = ["Sylvania Southview High School - Team A", "Sylvania Southview High School - Team B", "Sylvania Northview - Team A", "Carmel High School - Team A", "Carmel High School - Team B", "St. Ignatius High School - Team A", "St. Ignatius High School - Team B", "Glenbrook South High School - Team A", "Glenbrook South High School - Team B", "Glenbard West High School - Team A", "Glenbard West High School - Team B", "Crystal Lake Central High School - Team A", "Crystal Lake Central High School - Team B", "Joliet West High School - Team B", "Joliet West High School - Team A", "Ladue Horton Watkins High school - Team A", "Waubonsie Valley High School - Team A", "Waubonsie Valley High School - Team B", "Evergreen Park Community High School - Team A", "Adlai E. Stevenson High School - Team A", "Adlai E. Stevenson High School - Team B", "Alcott College Prep - Team A", "Alcott College Prep - Team B", "University of Chicago Laboratory Schools - Team A", "University of Chicago Laboratory Schools - Team B", "Ogden International - Team A", "Lyons Township High - Team A", "Lyons Township High - Team B", "Jones College Prep - Team A", "John Hersey High School - Team A", "Walter Payton College Prep - Team A", "Walter Payton College Prep - Team B", "Northside College Prep - Team A", "Northside College Prep - Team B", "OPRF - Team A", "OPRF - Team B", "John Hancock College Prep HS - Team A", "British International School of Chicago, South Loop - Team A", "Saint Ignatius College prep - Team A", "Saint Ignatius College prep - Team B"]
-    static func teamNumber() -> Int! {
-        return 1+roster.index(of: EventsData.currentSchool)!
+    static var selectedList:[String] = [] //for the events on the event picker
+    static var completeSOEventList:[String] = [] //can be replaced
+    static var soEventProperties:[[Bool]] = [] //store trial, test, self-scheduled, impound info
+    static var roster:[String] = [] //load up outside
+    static var currentSchool = 0 //int instead of string; also replaces teamNumber()
+    static var homerooms:[String] = [] //can do homerooms[currentSchool]
+    
+    //get current division as a bool: true for C, false for B
+    static func currentlyDivC() -> Bool {
+        return stringToBool(s: DLM.dlFiles.files[1].data[currentSchool][1])
     }
-    static func isSelfScheduled(evnt: String) -> Bool! {
-        return EventsData.selfScheduled.contains(evnt)
+    //get current schoool's time block
+    static func currentTimeBlock() -> Int? {
+        return Int(DLM.dlFiles.files[1].data[currentSchool][4])
     }
-    //returns the currently selected events that require impounds
-    static func impoundList() -> [String] {
-        var tmpList: [String] = []
-        for event in EventsData.list {
-            if selfScheduled.contains(event) || event == "Thermodynamics" {
-                tmpList.append(event)
+    //completeSOEventList = ["Anatomy & Physiology", "Astronomy", "Chemistry Lab", "Disease Detectives", "Dynamic Planet", "Ecology", "Experimental Design", "Fermi Questions", "Forensics", "Game On", "Helicopters", "Herpetology", "Hovercraft", "Materials Science", "Microbe Mission", "Mission Possible", "Mousetrap Vehicle", "Optics", "Remote Sensing", "Rocks & Minerals", "Thermodynamics", "Towers", "Write It Do It"]
+    //soEventProperties = ...
+    
+    //fxns to return a list of events with (or without) a given property
+    static func eventsThat(have: Bool, prop: Int) -> [(Int, String)] {
+        var tmp:[(Int, String)] = []
+        let propList = getCol(array: soEventProperties, col: prop) as! [Bool]
+        for i in 0..<completeSOEventList.count {
+            if have == propList[i] {
+                tmp.append((i, completeSOEventList[i]))
             }
         }
-        return tmpList.sorted()
+        return tmp
+    }
+    
+    static func divCEvents() -> [(Int, String)] {
+        return eventsThat(have: true, prop: 0)
+    }
+    static func divBEvents() -> [(Int, String)] {
+        return eventsThat(have: false, prop: 0)
+    }
+    static func trialEventList() -> [(Int, String)] {
+        return eventsThat(have: true, prop: 1)
+    }
+    static func testEventList() -> [(Int, String)] {
+        return eventsThat(have: true, prop: 2)
+    }
+    static func selfScheduledEventList() -> [(Int, String)] {
+        return eventsThat(have: true, prop: 3)
+    }
+    static func impoundEventList() -> [(Int, String)] {
+        return eventsThat(have: true, prop: 4)
+    }
+
+    //these fxns identify if a given event is a trial/test/self-scheduled/impound event
+    static func thisEvent(evnt: Int, has: Bool, prop: Int) -> Bool? {
+        var result: Bool? = nil //same as Optional.none
+        if (soEventProperties.count > evnt) && (soEventProperties[evnt].count > prop) {
+            result = (has == soEventProperties[evnt][prop])
+        }
+        return result
+    }
+    
+    static func isDivC(evnt: Int) -> Bool? {
+        return thisEvent(evnt: evnt, has: true, prop: 0)
+    }
+    static func isDivB(evnt: Int) -> Bool? {
+        return thisEvent(evnt: evnt, has: false, prop: 0)
+    }
+    static func isTrial(evnt: Int) -> Bool? {
+        return thisEvent(evnt: evnt, has: true, prop: 1)
+    }
+    static func isTest(evnt: Int) -> Bool? {
+        return thisEvent(evnt: evnt, has: true, prop: 2)
+    }
+    static func isSelfScheduled(evnt: Int) -> Bool? {
+        return thisEvent(evnt: evnt, has: true, prop: 3)
+    }
+    static func isImpounded(evnt: Int) -> Bool? {
+        return thisEvent(evnt: evnt, has: true, prop: 4)
     }
 }
 
-func hasHovercraft() -> Bool {
-    //print(EventsData.list)
-    return EventsData.list.contains("Hovercraft")
+func stringToBool(s: String) -> Bool {
+    if s == "1" {return true}
+    else {return false}
 }
 
 //fetches events from CoreData
@@ -54,7 +109,7 @@ func loadEvents() -> Void {
                     tmpRes.append(eventName)
                 }
             }
-            EventsData.list = tmpRes
+            EventsData.selectedList = tmpRes
         }
     }
     catch {
@@ -64,7 +119,7 @@ func loadEvents() -> Void {
 
 //Dumps everything to storage
 func firstSaveEvents() -> Void {
-    for eachEvent in EventsData.list {
+    for eachEvent in EventsData.selectedList {
         addEvent(eventName: eachEvent)
     }
 }
@@ -72,7 +127,7 @@ func firstSaveEvents() -> Void {
 //Save the event list in storage
 func saveEvents() -> Void {
     clearEvents() //for convenience
-    for eachEvent in EventsData.list {
+    for eachEvent in EventsData.selectedList {
         addEvent(eventName: eachEvent)
     }
 }
@@ -93,7 +148,7 @@ func addEvent(eventName: String) -> Void {
 
 //removes the first occurrence of an event
 func removeEvent(eventName: String, indexPath: IndexPath) -> Bool {
-    EventsData.list.remove(at: indexPath.row)
+    EventsData.selectedList.remove(at: indexPath.row)
     let tmp = request.predicate
     request.predicate = NSPredicate(format: "event = %@", eventName) //??
     var res : Bool = false

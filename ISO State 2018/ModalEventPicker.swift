@@ -23,10 +23,10 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         //return EventsData.completeList[component]
-        return EventsData.completeList.count
+        return EventsData.completeSOEventList.count
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return EventsData.completeList[row]
+        return EventsData.completeSOEventList[row]
     }
     
     override func didReceiveMemoryWarning() {
@@ -36,12 +36,12 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
     //add the current selection into the events list
     @IBAction func addButton(_ sender: Any) {
         let row = eventPicker.selectedRow(inComponent: 0)
-        let newEvent = EventsData.completeList[row]
-        if !(EventsData.list.contains(newEvent)) {
+        let newEvent = EventsData.completeSOEventList[row]
+        if !(EventsData.selectedList.contains(newEvent)) {
             print("\(newEvent) added!")
-            EventsData.list.append(newEvent)
+            EventsData.selectedList.append(newEvent)
             addEvent(eventName: newEvent)
-            NotificationCenter.default.post(name: .reloadSchoolName, object: nil)
+            //NotificationCenter.default.post(name: .reloadSchoolName, object: nil)
             
             cancelButton(addButton)
         } else {
@@ -57,12 +57,12 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
     }
 
     @IBAction func cancelButton(_ sender: Any) {
-        print(EventsData.list)
-        sendNotificationToUpdate()
+        //print(EventsData.selectedList)
+        //sendNotificationToUpdate()
         self.dismiss(animated: true, completion: nil)
     }
     
-    func sendNotificationToUpdate() -> Void {
+    /*func sendNotificationToUpdate() -> Void {
         NotificationCenter.default.post(name: .reload, object: nil)
-    }
+    }*/
 }

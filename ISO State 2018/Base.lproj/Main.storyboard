@@ -67,7 +67,7 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="LgL-QA-DpM"/>
-                                    <barButtonItem title="Item" image="forwardButton" id="LBX-7i-sVX">
+                                    <barButtonItem image="forwardButton" id="LBX-7i-sVX">
                                         <connections>
                                             <action selector="forwardFunc:" destination="stn-fe-INF" id="Unx-cE-fAR"/>
                                         </connections>
@@ -216,7 +216,7 @@
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem title="Item" image="big_gear" id="LnQ-Mc-9j1">
+                            <barButtonItem image="big_gear" id="LnQ-Mc-9j1">
                                 <connections>
                                     <segue destination="hna-xz-uHf" kind="show" id="bhX-qc-Z21"/>
                                 </connections>

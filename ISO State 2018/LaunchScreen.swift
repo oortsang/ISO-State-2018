@@ -12,13 +12,14 @@ class LaunchScreen: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("Has DLM.dlFiles already been initialized?")
+        DLM.dlFiles.beginUpdate()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
     /*
     // MARK: - Navigation

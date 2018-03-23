@@ -17,18 +17,19 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     
 
     //var homeroomFile = CSVFile()
-    var dlFiles = Downloadable()
+    //var dlFiles = Downloadable()
     
     // Get the refresh button to refresh
     @IBAction func refreshData(_ sender: UIBarButtonItem) {
-        dlFiles.beginUpdate()
-        NotificationCenter.default.post(name: .reloadSchoolName, object:nil)
+        DLM.dlFiles.beginUpdate() //table gets refreshed if download finishes
+        //NotificationCenter.default.post(name: .reloadSchoolName, object:nil)
     }
 
     //called every time the view is brought to view
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        dlFiles.beginUpdate() // call the update now
+        DLM.dlFiles.beginUpdate() // call the update now
+        updateSchoolAndTable()
     }
 
     //called just at the beginning of the app
@@ -38,9 +39,9 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         updateEvents()
         
         super.viewDidLoad()
-	updateSchoolAndTable()
+        updateSchoolAndTable()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(updateSchoolAndTable), name: .reloadSchoolName, object: nil)
+        //NotificationCenter.default.addObserver(self, selector: #selector(updateSchoolAndTable), name: .reloadSchoolName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onDownloadSummoned), name: .downloadFinished, object: nil)
         
         //extra detail by tapping on a cell
@@ -74,68 +75,55 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     
     //on download finish (note: does not update view)
     @objc func onDownloadSummoned () {
-        //print("Download summoned")
-        dlFiles.finishUpdate()
+        DLM.dlFiles.finishUpdate()
         updateSchoolAndTable()
-        //print("Finished onDownloadSummoned")
     }
     
     //update the text to reflect current team set
+    //called by onDownloadSummoned and onViewDidAppear
     @objc func updateSchoolAndTable() {
         DispatchQueue.main.async() {
             //update team info
-            let sName = EventsData.currentSchool
-            let sNumber = EventsData.teamNumber()!
-            if self.dlFiles.homerooms.data.count > 1 {
-                ScheduleData.updateHomerooms(dataFile: self.dlFiles.homerooms)
+            /*let sNumber = EventsData.teamNumber()!
+            if DLM.dlFiles.homerooms.data.count > 1 {
+                ScheduleData.updateHomerooms(dataFile: DLM.dlFiles.homerooms)
+            }*/
+            
+            let sNumber = EventsData.currentSchool
+            var currentHomeroom: String
+            if DLM.dlFiles.homerooms.data.count > sNumber && sNumber >= 0 {
+                currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
+            } else {
+                currentHomeroom = "Not currently available..."
             }
-            self.schoolTitle.text = "Viewing as: (\(sNumber)) \(sName)"
-            self.homeroomLocation.text = "Homeroom: \(ScheduleData.homeroom)"
-            saveSchoolName(teamName: sName)
+            self.schoolTitle.text = "Viewing as: (\(sNumber)) \(EventsData.roster[sNumber])"
+            self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
+            saveSelectedSchool(currentSchool: sNumber)
             
             //update the table itself
             self.updateEvents()
             
-            //schedView.reloadSections(IndexSet(integer: 1), with: .none)
             self.schedView.reloadSections(IndexSet([0,1,2]) , with: .none)
-            //schedView.reloadData()
             self.schedView.reloadInputViews()
         }
     }
     
-    //helper function just for string processing
-    func cleanTime(time: String, duration: Int = 50) -> String! {
-        var result = time
-        if time == "" || time == "?" {
-            result = "?"
-        } else if time.count <= 2 {
-            if duration < 60 && duration != 0 {
-                let strDur = String(duration)
-                let end = time + ":" + ((strDur.count < 2) ? ("0"+strDur) : (strDur))
-                let ampm = (Int(time)! > 5) ? "A" : "P"
-                result += ":00 - \(end) \(ampm)M"
-            } else {
-                let ampm = (Int(time)! > 5) ? "A" : "P"
-                result += ":00 \(ampm)M"
-            }
-        } //leave the time alone if it is a 'full' time, i.e. 8:00-8:30 or 9:00
-        return result
-    }
+    
     //put the events back into ScheduleData.events so that it can be nicely formatted
     func updateEvents() {
         var elList: [EventLabel] = []
-        if dlFiles.testEvents.file == "" {return}
-        for elm in EventsData.list {
-            let i = EventsData.completeList.index(of: elm)!
-            
+        if DLM.dlFiles.testEvents.file == "" {return}
+        //for elm in EventsData.selectedList {
+        //    let i = EventsData.selectedList.index(of: elm)!
+        for i in 0..<EventsData.selectedList.count {
+            let elm = EventsData.selectedList[i]
             // make sure no index-out-of-bounds error for `loc`
-            if dlFiles.testEvents.data.count <= i+1 {
+            if DLM.dlFiles.testEvents.data.count <= i+1 {
                 return
-            } else if dlFiles.testEvents.data[i+1].count <= 5 {
+            } else if DLM.dlFiles.testEvents.data[i+1].count <= 5 {
                 return
             }
-            let loc = dlFiles.testEvents.data[i+1][5]
-
+            let loc = DLM.dlFiles.testEvents.data[i+1][5]
 
             var time = "?"
             
@@ -145,16 +133,16 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
                 let teamNumber = EventsData.teamNumber()!
                 let j = 1+EventsData.selfScheduled.index(of: elm)!
                 //print("Trying to access: team number \(teamNumber) for the \(j)th event")
-                time = cleanTime(time: dlFiles.buildEvents.data[j][teamNumber])
+                time = ScheduleData.cleanTime(time: DLM.dlFiles.buildEvents.data[j][teamNumber])
             } else {
-                let teamBlock =  Int(ceil(Float(EventsData.teamNumber()!)/10)) //1-10,11-20,21-30,31-40
-                time = cleanTime(time: dlFiles.testEvents.data[i+1][teamBlock])
+                let teamBlock =  Int(ceil(Float(EventsData.currentSchool)/10)) //1-10,11-20,21-30,31-40
+                time = ScheduleData.cleanTime(time: DLM.dlFiles.testEvents.data[i+1][teamBlock])
             }
             //print(time)
             let tmp = EventLabel(name: elm, loc: loc, time: time)
             elList.append(tmp)
         }
-        ScheduleData.events = orderEvents(eventList: elList)
+        ScheduleData.soEvents = ScheduleData.orderEvents(eventList: elList)
         
         //print("At the end of updateEvents, there are \(ScheduleData.events.count) events")
     }
@@ -172,7 +160,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         case 2:
             return ScheduleData.lateEvents.count
         default:
-            return EventsData.list.count //the meat and potatoes
+            return EventsData.selectedList.count //the meat and potatoes
         }
     }
     
@@ -190,17 +178,17 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             } else {
                 let beName = EventsData.impoundList()[indexPath.row - ScheduleData.earlyEvents.count]
                 let i = EventsData.completeList.index(of: beName)!
-                let teamBlock = Int(ceil(Float(EventsData.teamNumber()!)/10))
+                let teamBlock = Int(ceil(Float(EventsData.currentSchool)/10))
                 var loc = ""
                 var time = ""
                 //if beName == "Hovercraft" {
-                    // make sure no index-out-of-bounds error for `cleanTime`
-                    if dlFiles.testEvents.data.count <= i+1 || dlFiles.testEvents.data[i+1].count <= teamBlock {
+                    // make sure no index-out-of-bounds error for `ScheduleData.cleanTime`
+                    if DLM.dlFiles.testEvents.data.count <= i+1 || DLM.dlFiles.testEvents.data[i+1].count <= teamBlock {
                         time = "8:00 - 8:30 AM"
                     } else {
-                        time = cleanTime(time: dlFiles.testEvents.data[i+1][teamBlock],
+                        time = ScheduleData.cleanTime(time: DLM.dlFiles.testEvents.data[i+1][teamBlock],
                                          duration: 30)!
-                        loc = dlFiles.testEvents.data[i+1][5]
+                        loc = DLM.dlFiles.testEvents.data[i+1][5]
                     }
 //                } else {
 //                    time = "8:00 - 8:30 AM"
@@ -219,13 +207,13 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             break
         default:
             // check that ScheduleData.events is not empty
-            if ScheduleData.events.count == 0 {
+            if ScheduleData.soEvents.count == 0 {
                 cell.textLabel!.text = "???"
                 cell.detailTextLabel!.text = "pls connect to the internet :|"
             }
             // check that we actually have a testEvents file
-            else if dlFiles.testEvents.file == "" || dlFiles.buildEvents.file == "" {
-                cell.textLabel!.text = (ScheduleData.events[indexPath.row] as EventLabel).name
+            else if DLM.dlFiles.testEvents.file == "" || DLM.dlFiles.buildEvents.file == "" {
+                cell.textLabel!.text = (ScheduleData.soEvents[indexPath.row] as EventLabel).name
                 cell.detailTextLabel!.text = "Entry not found: Please connect to internet"
             } else {
                 cell = (ScheduleData.events[indexPath.row] as EventLabel).printCell(cell: cell)

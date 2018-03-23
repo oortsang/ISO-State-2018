@@ -18,7 +18,8 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         schoolPicker.dataSource = self
         schoolPicker.delegate = self
         //set default value, but beware that this is zero-indexed
-        let sNumber0 = EventsData.roster.index(of: EventsData.currentSchool)!
+        //let sNumber0 = EventsData.roster.index(of: EventsData.currentSchool)!
+        let sNumber0 = EventsData.currentSchool
         schoolPicker.selectRow(sNumber0, inComponent: 0, animated: false)
     }
     
@@ -34,16 +35,16 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     
     @IBAction func doneButton(_ sender: Any) {
         let row = schoolPicker.selectedRow(inComponent: 0)
-        EventsData.currentSchool = EventsData.roster[row]
-        //figure out core data business later...
+        EventsData.currentSchool = row
+        saveSelectedSchool(currentSchool: row) //save
         
-        sendSchoolNotificationToUpdate()
+        //sendSchoolNotificationToUpdate()
         self.dismiss(animated: true, completion: nil)
     }
     
-    func sendSchoolNotificationToUpdate() -> Void {
+    /*func sendSchoolNotificationToUpdate() -> Void {
         NotificationCenter.default.post(name: .reloadSchoolName, object: nil)
-    }
+    }*/
     
 }
 
@@ -53,10 +54,10 @@ let teamContext = teamAppDelegate.persistentContainer.viewContext
 let teamRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Teams")
 
 //write current school to disk
-func saveSchoolName(teamName: String) -> Void {
+func saveSelectedSchool(currentSchool: Int) -> Void {
     clearSchools()
     let newTeam = NSEntityDescription.insertNewObject(forEntityName: "Teams", into: teamContext)
-    newTeam.setValue (teamName, forKey: "name")
+    newTeam.setValue (currentSchool, forKey: "number")
     do {
         try teamContext.save()
         //print("teamContext saved properly")
@@ -89,9 +90,9 @@ func loadSchoolName() -> Void {
         let results = try teamContext.fetch(teamRequest)
         if results.count > 0 {
             let result = results.first
-            if let schoolName = (result as AnyObject).value(forKey:"name") as? String {
-                EventsData.currentSchool = schoolName
-                print("Loaded team: \(schoolName)")
+            if let schoolNumber = (result as AnyObject).value(forKey:"name") as? Int {
+                EventsData.currentSchool = schoolNumber
+                print("Loaded team: \(EventsData.roster[schoolNumber])")
             }
         }
     }

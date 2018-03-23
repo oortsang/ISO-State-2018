@@ -9,7 +9,11 @@
 import Foundation
 import CoreData
 
-
+extension Notification.Name {
+    static let downloadFinished = Notification.Name("downloadFinished")
+    //static let reload = Notification.Name("reload")
+    //static let reloadSchoolName = Notification.Name("reloadSchool")
+}
 
 func getCol(array: [[Any]], col: Int) -> [Any]? {
     var tmp: [Any] = []
@@ -21,11 +25,25 @@ func getCol(array: [[Any]], col: Int) -> [Any]? {
 
 
 class CSVFile {
-    static let baseFileFolder = "https://raw.githubusercontent.com/oortsang/UCSO-Invitational-2018/master/Updatable%20Files/"
-    static let buildEventAddress = baseFileFolder + "BuildEvents.csv"
-    static let testEventAddress = baseFileFolder + "TestEvents.csv"
-    static let homeroomAddress = baseFileFolder + "Homerooms.csv"
+    static let baseFileFolder = "https://raw.githubusercontent.com/oortsang/ISO-State-2018/master/Updatable%20Files/"
 
+    static let soEventAddress = baseFileFolder + "SciolyEvents.csv"
+    static let teamNamesAddress = baseFileFolder + "TeamNames.csv"
+    static let homeroomAddress = baseFileFolder + "Homerooms.csv"
+    static let testEventAddress = baseFileFolder + "TestEvents.csv"
+    static let buildEventAddress = baseFileFolder + "BuildEvents.csv"
+    static let schedEventAddress = baseFileFolder + "ScheduledEvents.csv"
+    static let locAddress = baseFileFolder + "Locations.csv"
+    
+    static let addressesList = [CSVFile.soEventAddress,
+                                CSVFile.teamNamesAddress,
+                                CSVFile.homeroomAddress,
+                                CSVFile.testEventAddress,
+                                CSVFile.buildEventAddress,
+                                CSVFile.schedEventAddress,
+                                CSVFile.locAddress
+                               ]
+    
     var data: [[String]] = [[]]
     var file: String = ""
     
