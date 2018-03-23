@@ -14,7 +14,8 @@ class EventLabel {
     var loc = ""
     var time = ""
     var date = "" //optional
-    var locCode = -1 //optional -- for linking to the map
+    var num: Int = -1 //optional but should have for SOEvents
+    var locCode: Int = -1 //optional -- for linking to the map
     func getTime() -> String! {
         return self.time
     }
@@ -44,6 +45,9 @@ class EventLabel {
     init(name: String, loc: String, locCode: Int, time: String) {
         (self.name, self.loc, self.locCode, self.time) = (name, loc, locCode, time)
     }
+    init(num: Int, name: String, loc: String, locCode: Int, time: String) {
+        (self.num, self.name, self.loc, self.locCode, self.time) = (num, name, loc, locCode, time)
+    }
     init () {}
 }
 
@@ -65,30 +69,43 @@ class ScheduleData {
     }
     
     //returns whether first event happens before the second event
-    /*TODO: Accept full range of time*/
+    //can assume this is processing a standard time (either "?" or "9:20 AM")
     static func comesBefore (ev1: EventLabel, ev2: EventLabel) -> Bool {
+        //first by date if possible:
+        if (ev1.date != "" && ev2.date != "") { //both dates are defined
+            if ev1.date < ev2.date {
+                return true
+            } //otherwise keep going
+        }
+        
         //in case time is unknown
         if (ev1.time == "?" || ev2.time == "?") {
             return true
         }
-        
-        var isBefore = true
-        let hourOrder = [7,8,9,10,11,12,1,2,3,4,5,6]
-        let separator = {(str: String) -> [String] in return str.components(separatedBy: ":")}
-        let hourIndex = {(i: Int) -> Int? in return hourOrder.index(of: i)}
-        let (t1, t2) =  (ev1.getTime(), ev2.getTime())
-        let (s1, s2) = (separator(t1!), separator(t2!))
-        let (h1, h2) = (Int(s1[0])!, Int(s2[0])!)
-        let (m1, m2) = (s1[1].first!, s2[1].first!)
-        
-        isBefore = hourIndex(h1)! < hourIndex(h2)!
-        if (hourIndex(h1)! == hourIndex(h2)!) {
-            isBefore = m1 < m2
-            if m1 == m2 {
-                isBefore = ev1.name < ev2.name
-            }
+        let (t1, t2) = (ev1.getTime()!, ev2.getTime()!)
+        let (s1, s2) = (t1.index(of: " ")!, t2.index(of: " ")!)
+        let (amInd1, amInd2) = (t1.index(s1, offsetBy: 1), t2.index(s2, offsetBy: 1))
+        let (am1, am2) = (String(t1[amInd1]).first!, String(t2[amInd2]).first!)
+        //if one is in the morning but the other is in the afternoon
+        if am1 != am2 {
+            return am1 < am2 //It's a convenient fact that 'A' < 'P'
         }
-        return isBefore
+        let (col1, col2) = (t1.index(of: ":")!, t2.index(of: ":")!)
+        let (hStr1, hStr2) = (String(t1[..<col1]), String(t2[..<col2]))
+        let (h1, h2) = (Int(hStr1)!, Int(hStr2)!)
+        
+        if h1 != h2 {
+            return h1 < h2
+        }
+        
+        let (c1, c2) = (t1.index(col1, offsetBy: 1), t2.index(col2, offsetBy:1))
+        let (mStr1, mStr2) = (String(t1[c1..<s1]), String(t2[c2..<s2]))
+        let (m1, m2) = (Int(mStr1)!, Int(mStr2)!)
+        
+        if m1 != m2 {
+            return m1 < m2
+        }
+        return ev1.name < ev2.name
     }
     
     static func stringyTime(hour: Int, mins: Int, ampm: Character) -> String {

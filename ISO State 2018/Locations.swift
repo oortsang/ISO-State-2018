@@ -11,7 +11,18 @@ import MapKit
 import CoreLocation
 
 class Locs {
-    static var locList: [(String, String, Double, Double, Double)] = [] //middle entry is the code
+    typealias locEntry = (String, String, Int, Double, Double)
+    static var locList: [locEntry] = [] //middle entry is the code
+    
+    static func getLocation(locCode: Int) -> locEntry? {
+        for i in 0..<Locs.locList.count {
+            let l = Locs.locList[i]
+            if l.2 == locCode {
+                return l
+            }
+        }
+        return nil
+    }
 }
 /*let locList: [(String, String, Double, Double)]
     = [ ("BSLC", "Biological Sciences Learning Center", 41.7918, -87.6026288),

@@ -78,6 +78,7 @@ class Downloadable {
         EventsData.homerooms = getCol(array: self.files[1].data, col: 3) as! [String]
         self.prepareSOEvents()
         self.prepareSchedEvents()
+        self.prepareLocations()
     }
     
     //load the scioly events from the downloaded/loaded CSVs into ScheduleData.soEvents
@@ -87,36 +88,38 @@ class Downloadable {
         for i in 0..<self.files[2].data.count {
             let info = self.files[2].data[i]
             let cTB = EventsData.currentTimeBlock()
-            let (evName, loc) = (info[1], info[3])
+            let (evNum, evName, loc) = (Int(info[0])!, info[1], info[3])
             let locCode = Int(info[4]) ?? -1
             
             let tmpTime = info[4+cTB!]
             let dur = (info[2]=="") ? 50 : Int(info[2])!
             let evTime = ScheduleData.formatTime(time: tmpTime, duration: dur)!
-            let entry = EventLabel(name: evName, loc: loc, locCode: locCode, time: evTime)
+            let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }
         //add contributions from file 3, self-scheduled events
         for i in 0..<self.files[3].data.count {
             let info = self.files[3].data[i]
+            let evNum = Int(info[0])!
             let (evName, loc) = (info[1], info[3])
             let locCode = Int(info[4]) ?? -1
             let ind = 4+EventsData.currentSchool
             let tmpTime = ind>=info.count ? "?" : info[ind] //not pretty yet
             let evTime = ScheduleData.formatTime(time: tmpTime, duration: Int(info[2])!)!
-            let entry = EventLabel(name: evName, loc: loc, locCode: locCode, time: evTime)
+            let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }
         //add contributions from file 4, the impound times
         for i in 0..<self.files[4].data.count {
             let info = self.files[4].data[i]
+            let evNum = Int(info[0])!
             let (evName, loc) = (info[1], info[3])
             let locCode = Int(info[4]) ?? -1
             let evTime = ScheduleData.formatTime(time: info[5], duration: Int(info[2])!)!
-            let entry = EventLabel(name: evName, loc: loc, locCode: locCode, time: evTime)
+            let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }
-        ScheduleData.soEvents = ScheduleData.orderEvents(eventList: tmp) //TODO: REORDER
+        ScheduleData.soEvents = ScheduleData.orderEvents(eventList: tmp) //reordered by time
     }
     
     func prepareSchedEvents() -> Void {
@@ -129,7 +132,20 @@ class Downloadable {
             let entry = EventLabel(name: evName, loc: loc, locCode: locCode, time: evTime, date: date)
             tmp.append(entry)
         }
-        ScheduleData.schedEvents = ScheduleData.orderEvents(eventList: tmp)
+        ScheduleData.schedEvents = tmp //need to reorder later anyway
+    }
+    //load into Locations.swift's class
+    func prepareLocations() -> Void {
+        var tmp: [(String, String, Int, Double, Double)] = []  
+        //load from file 6, the location coordinates
+        for i in 0..<self.files[6].data.count {
+            let info: [String] = self.files[5].data[i]
+            let locCode = Int(info[2])!
+            let latlong = Array(info[3...]).map{Double($0)!}
+            tmp.append((info[0], info[1], locCode, latlong[0], latlong[1]))
+        }
+        Locs.locList = tmp //apparently this is okay despite the scopes changing
+        //behavior seems to be that it makes a full copy rather than just passing a pointer...
     }
 }
 
