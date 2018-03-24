@@ -12,6 +12,7 @@ class TableViewController: UITableViewController {
     //reload table data when it's opened
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        print(EventsData.selectedList)
         reloadTableData()
     }
     
@@ -36,6 +37,7 @@ class TableViewController: UITableViewController {
     //procedure for clearing everything
     @objc func clearAll() {
         EventsData.selectedList = []
+        ScheduleData.selectedSOEvents = []
         clearEvents()
         tableView.reloadData()
         //NotificationCenter.default.post(name: .reloadSchoolName, object: nil)

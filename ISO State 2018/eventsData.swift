@@ -22,19 +22,17 @@ class EventsData: NSObject {
     static var officialNumbers: [Int] = [] //real official numbers
     static var currentSchool = 0 //This is actually different from the team number because of the fact that there's division B and C -- use a unique identifier internally
     static var currentHomeroomLocCode = -1//fill externally
-    //static var homerooms:[String] = [] //can do homerooms[currentSchool]
-    //static var curDivIsC = true //by default for now...
+    static var div: Character = "C" // "B" or "C"
+    
+    
     static func teamNumber() -> Int {
         return Int(DLM.dlFiles.files[1].data[currentSchool][1])!
     }
     
     //get current division as a bool: true for C, false for B
     static func curDivC() -> Bool {
-        return stringToBool(s: DLM.dlFiles.files[1].data[currentSchool][2])
-    }
-    //returns "B" or "C" depending on the current division
-    static func div() -> String {
-        return DLM.dlFiles.files[1].data[currentSchool][2]
+        //return stringToBool(s: DLM.dlFiles.files[1].data[currentSchool][2])
+        return stringToBool(s: String(div))
     }
     
     //get current schoool's time block
@@ -147,8 +145,7 @@ func firstSaveEvents() -> Void {
 //Save the event list in storage
 func saveEvents() -> Void {
     clearEvents() //for convenience
-    let cpy = EventsData.selectedList
-    for eachEvent in cpy {
+    for eachEvent in EventsData.selectedList {
         addEvent(eventNum: eachEvent)
     }
 }
@@ -162,7 +159,10 @@ func addEvent(eventNum: Int) -> Void {
     
     //add to ScheduleData list
     //let evNum = Int(DLM.dlFiles.files[0].data[eventNum][0])!
-    let evLabel = ScheduleData.getEventFromNumber(evNum: eventNum)!
+    guard let evLabel = ScheduleData.getEventFromNumber(evNum: eventNum) else {
+        print("Couldn't add event! Maybe the files aren't available")
+        return
+    }
     ScheduleData.selectedSOEvents.append(evLabel)
     
     //save to CoreData

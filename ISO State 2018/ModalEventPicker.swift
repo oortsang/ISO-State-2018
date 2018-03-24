@@ -39,7 +39,8 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
         let eventNum = row+1 //UPDATE FOR DIV B/C
         if !(EventsData.selectedList.contains(eventNum)) {
             //print("\(EventsData.completeSOEventList[eventNum]) added!")
-            addEvent(eventNum: eventNum) //save to disk and ED and SD classes
+            addEvent(eventNum: eventNum) //save to disk and ScheduleData
+            EventsData.selectedList.append(eventNum)
             cancelButton(addButton)
         } else {
             let alert = UIAlertController(title: "Event Selection", message: "You've already selected this event", preferredStyle: .alert)

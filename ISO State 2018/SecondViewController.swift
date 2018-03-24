@@ -112,7 +112,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
                     currentHomeroom = "Not currently available..."
                     currentHomeroomLocCode = -1
                 }
-                self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber())\(EventsData.div())) \(EventsData.roster[cNum])"
+                self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])"
                 self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
                 EventsData.currentHomeroomLocCode = currentHomeroomLocCode
                 saveSelectedSchool(currentSchool: cNum)
@@ -141,7 +141,10 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         }
         for i in 0..<EventsData.selectedList.count { //for each active event, as accounted by EventsData
             let evnc: Int = EventsData.selectedList[i] //event number code
-            let newEvLab: EventLabel = ScheduleData.getEventFromNumber(evNum: evnc)!
+            guard let newEvLab: EventLabel = ScheduleData.getEventFromNumber(evNum: evnc) else {
+                print("Couldn't Fetch data for event \(evnc)")
+                continue
+            }
             elList.append(newEvLab)
         }
         ScheduleData.selectedSOEvents = ScheduleData.orderEvents(eventList: elList)

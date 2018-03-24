@@ -19,7 +19,9 @@ class Downloadable {
         DispatchQueue.main.async {
             for i in 0..<self.fileCount {
                 self.files[i].load(fileName: self.fileNames[i])
+                print("Loaded \(self.fileNames[i])")
             }
+            self.parse()
         }
     }
     
@@ -36,7 +38,6 @@ class Downloadable {
         //save each file
         for i in 0..<self.fileCount {
             self.files[i].downloadFile(sourceURL: CSVFile.addressesList[i])
-            
         }
     }
     
@@ -49,7 +50,7 @@ class Downloadable {
         
         self.save()
         //print("saved")
-        self.parse()
+        //self.parse()
     }
     //saves all the tracked files
     func save() {
@@ -60,7 +61,9 @@ class Downloadable {
             }
         }
     }
+    
     //to try to start early
+    //don't think this works...
     func manualStart() {
         self.load()
         self.beginUpdate()
@@ -76,27 +79,31 @@ class Downloadable {
             tmp[i].whichFile = i
         }
         files = tmp
-        /*self.load()
+        self.load()
         self.beginUpdate()
         //Notification center hasn't started up yet
         self.downloadInProgress = 0
-         */
+        
     }
     
     //should be pretty quick to run
+    //loads contents from *.file to *.data
     func parse() {
-        //print("Starting parse")
-        //get into 2d array
+        //first make sure everything is downloaded
         var allDownloaded = true
         for i in 0..<fileCount {
-            if self.files[i].data.count < 1 {
+            if self.files[i].file.count < 1 {
                 allDownloaded = false
+                //break
+                print("\(self.fileNames[i]) is not ready to be parsed")
+                return
             }
+        }
+        //parse into the data files
+        for i in 0..<fileCount {
             self.files[i].parse()
         }
-        guard allDownloaded else {
-            return
-        }
+        
         //put into proper places
         //file 0
         let eventNumbers = (getCol(array: self.files[0].data, col: 0) as! [String]).map{Int($0)!}
