@@ -23,8 +23,8 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     @IBAction func refreshData(_ sender: UIBarButtonItem) {
         DLM.dlFiles.beginUpdate() //table gets refreshed if download finishes
         //NotificationCenter.default.post(name: .reloadSchoolName, object:nil)
-        print(DLM.dlFiles.files[1].data)
-        print(DLM.dlFiles.files[1].file)
+        //print(DLM.dlFiles.files[1].data)
+        //print(DLM.dlFiles.files[1].file)
         
     }
 
@@ -64,7 +64,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             let touchPoint = recognizer.location(in: schedView)
             if let indexPath = schedView.indexPathForRow(at: touchPoint) {
                 let cell = schedView.cellForRow(at: indexPath)
-                print(indexPath)
+                //print(indexPath)
                 //modify when cells get prettier!
                 let title = cell?.textLabel!.text
                 let msg = cell?.detailTextLabel!.text
@@ -82,7 +82,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     
     //on download finish
     @objc func onDownloadSummoned () {
-        print("Download ready! *** Downloads in progress: \(DLM.dlFiles.downloadInProgress)")
+        //print("Download ready! *** Downloads in progress: \(DLM.dlFiles.downloadInProgress)")
         DLM.dlFiles.finishUpdate()
         updateSchoolAndTable()
     }
@@ -101,7 +101,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             var currentHomeroom: String
             var currentHomeroomLocCode: Int
             if DLM.dlFiles.files[1].data.count>1 && EventsData.roster.count > 0 {
-                print("Homeroom file is done")
+                //print("Homeroom file is done")
                 let homeroomNames = getCol(array:DLM.dlFiles.files[1].data, col:4) as! [String]
                 let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[1].data, col:5) as! [String]).map{Locs.locCoder(input: $0)}
                 if homeroomNames.count > cNum && cNum >= 0 {
@@ -112,7 +112,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
                     currentHomeroom = "Not currently available..."
                     currentHomeroomLocCode = -1
                 }
-                self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber()) \(EventsData.roster[cNum])"
+                self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber())\(EventsData.div())) \(EventsData.roster[cNum])"
                 self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
                 EventsData.currentHomeroomLocCode = currentHomeroomLocCode
                 saveSelectedSchool(currentSchool: cNum)
@@ -135,6 +135,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             || DLM.dlFiles.files[2].file == ""
             || DLM.dlFiles.files[3].file == ""
             || DLM.dlFiles.files[4].file == ""
+            || ScheduleData.completeSOEvents.count == 0
         {
             return
         }

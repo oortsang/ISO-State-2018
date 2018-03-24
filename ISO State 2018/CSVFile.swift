@@ -77,8 +77,9 @@ class CSVFile {
     
     //appDelegate is defined elsewhere
     static let fileContext = appDelegate.persistentContainer.viewContext
-    static let fileRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Files")
-    
+    //static let fileRequest = NSFetchRequest<String>(entityName: "Files")
+    //static let fileRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Files")
+    static let fileRequest = NSFetchRequest<Files>(entityName: "Files")
     //storing these csv guys
     //tell it what name to save under
     func save(name: String) {
@@ -115,10 +116,13 @@ class CSVFile {
             if results.count > 0 {
                 print(results)
                 let result = results.first
-                if let loadedData = (result as! NSManagedObject).value(forKey:"data") {
+                /*if let loadedData = (result as! NSManagedObject).value(forKey:"data") {
                     self.file = loadedData as! String
                     self.parse()
-                }
+                }*/
+                self.file = result!.data!
+                self.parse()
+                
             }
         }
         catch {
@@ -132,8 +136,8 @@ class CSVFile {
     func clear(fileName: String) {
         CSVFile.fileRequest.returnsObjectsAsFaults = false
         do {
-            let results = try CSVFile.fileContext.fetch(CSVFile.fileRequest) as? [NSManagedObject]
-            if results!.count > 0 {
+            let results = try CSVFile.fileContext.fetch(CSVFile.fileRequest) as [NSManagedObject]
+            if results.count > 0 {
                 
                 for object in results as [NSManagedObject]! {
                     //if object.value(forKey: "fileName") as! String == fileName {
@@ -150,10 +154,10 @@ class CSVFile {
     //clear all files from disk
     static func clearAll() -> Void {
         do {
-            let results = try CSVFile.fileContext.fetch(fileRequest) as? [NSManagedObject]
-            if results!.count > 0 {
+            let results = try CSVFile.fileContext.fetch(fileRequest) as [NSManagedObject]
+            if results.count > 0 {
                 //delete all results
-                for object in results! {
+                for object in results {
                     //print("Removed \(object)")
                     CSVFile.fileContext.delete(object)
                 }

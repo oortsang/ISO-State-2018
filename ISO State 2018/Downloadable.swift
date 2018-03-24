@@ -27,10 +27,10 @@ class Downloadable {
     func beginUpdate() {
         //don't start if a download is already in progress
         if self.downloadInProgress != 0 {
-            print("Download already in progress!")
+            //print("Download already in progress!")
             return
         } else {
-            print("Download NOT already in progress!!!! How shocking!")
+            //print("Download NOT already in progress!!!! How shocking!")
         }
         self.downloadInProgress += fileCount
         //save each file
@@ -48,17 +48,17 @@ class Downloadable {
         }*/
         
         self.save()
-        print("saved")
+        //print("saved")
         self.parse()
     }
     //saves all the tracked files
     func save() {
-        //DispatchQueue.main.async {
-        for i in 0..<self.fileCount {
-            //print("About to save \(self.fileNames[i])")
-            self.files[i].save(name: self.fileNames[i])
+        DispatchQueue.main.async {
+            for i in 0..<self.fileCount {
+                //print("About to save \(self.fileNames[i])")
+                self.files[i].save(name: self.fileNames[i])
+            }
         }
-        //}
     }
     //to try to start early
     func manualStart() {
@@ -85,7 +85,7 @@ class Downloadable {
     
     //should be pretty quick to run
     func parse() {
-        print("Starting parse")
+        //print("Starting parse")
         //get into 2d array
         var allDownloaded = true
         for i in 0..<fileCount {
@@ -124,7 +124,7 @@ class Downloadable {
         //add contributions from file 2, testing events
         for i in 0..<self.files[2].data.count {
             let info = self.files[2].data[i]
-            print (info)
+            //print (info)
             let (evNum, evName, loc) = (Int(info[0])!, info[1], info[3])
             let locCode = Int(info[4]) ?? -1
             

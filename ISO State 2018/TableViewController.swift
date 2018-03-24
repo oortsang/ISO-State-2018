@@ -54,7 +54,9 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
         // This might be sketchy
-        cell.textLabel!.text = EventsData.completeSOEventList[EventsData.selectedList[indexPath.row]]
+        let show = EventsData.selectedList
+        let eventNumber = EventsData.selectedList[indexPath.row] // UPDATE FOR DIV B / C
+        cell.textLabel!.text = EventsData.lookupEventName(evNumber: eventNumber)
         return cell
     }
     
@@ -100,6 +102,7 @@ class TableViewController: UITableViewController {
             }
         }
         EventsData.selectedList = tmp
+        print("cleaning duplicates and have \(tmp.count) selected events")
         saveEvents()
     }
     

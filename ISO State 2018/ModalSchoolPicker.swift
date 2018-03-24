@@ -51,7 +51,7 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
 
 let teamAppDelegate = UIApplication.shared.delegate as! AppDelegate
 let teamContext = teamAppDelegate.persistentContainer.viewContext
-let teamRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Teams")
+let teamRequest = NSFetchRequest<Teams>(entityName: "Teams")
 
 //write current school to disk
 func saveSelectedSchool(currentSchool: Int) -> Void {
@@ -70,10 +70,10 @@ func saveSelectedSchool(currentSchool: Int) -> Void {
 //clear team names from disk
 func clearSchools() -> Void {
     do {
-        let results = try teamContext.fetch(teamRequest) as? [NSManagedObject]
-        if results!.count > 0 {
+        let results = try teamContext.fetch(teamRequest) as [NSManagedObject]
+        if results.count > 0 {
             //delete all results
-            for object in results! {
+            for object in results {
                 //print("Removed \(object)")
                 teamContext.delete(object)
             }
@@ -90,10 +90,12 @@ func loadSchoolName() -> Void {
         let results = try teamContext.fetch(teamRequest)
         if results.count > 0 {
             let result = results.first
-            if let schoolNumber = (result as AnyObject).value(forKey:"name") as? Int {
+            /*if let schoolNumber = (result as AnyObject).value(forKey:"name") as? Int {
                 EventsData.currentSchool = schoolNumber
                 print("Loaded team: \(EventsData.roster[schoolNumber])")
-            }
+            }*/
+            EventsData.currentSchool = Int(result!.number)
+            //print("Loaded team: \(EventsData.roster[EventsData.currentSchool])")
         }
     }
     catch {

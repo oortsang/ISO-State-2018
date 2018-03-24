@@ -25,13 +25,18 @@ class EventsData: NSObject {
     //static var homerooms:[String] = [] //can do homerooms[currentSchool]
     //static var curDivIsC = true //by default for now...
     static func teamNumber() -> Int {
-        return Int(DLM.dlFiles.files[1].data[currentSchool][0])!
+        return Int(DLM.dlFiles.files[1].data[currentSchool][1])!
     }
     
     //get current division as a bool: true for C, false for B
     static func curDivC() -> Bool {
-        return stringToBool(s: DLM.dlFiles.files[1].data[currentSchool][1])
+        return stringToBool(s: DLM.dlFiles.files[1].data[currentSchool][2])
     }
+    //returns "B" or "C" depending on the current division
+    static func div() -> String {
+        return DLM.dlFiles.files[1].data[currentSchool][2]
+    }
+    
     //get current schoool's time block
     static func currentTimeBlock() -> Int? {
         let teamInfo = DLM.dlFiles.files[1].data
@@ -119,7 +124,9 @@ func loadEvents() -> Void {
             var tmpRes = [Int]()
             for result in results {
                 if let eventNum = (result as AnyObject).value(forKey:"event") as? Int {
-                    tmpRes.append(eventNum)
+                    if !tmpRes.contains(eventNum) {
+                        tmpRes.append(eventNum)
+                    }
                 }
             }
             EventsData.selectedList = tmpRes
@@ -140,17 +147,18 @@ func firstSaveEvents() -> Void {
 //Save the event list in storage
 func saveEvents() -> Void {
     clearEvents() //for convenience
-    for eachEvent in EventsData.selectedList {
+    let cpy = EventsData.selectedList
+    for eachEvent in cpy {
         addEvent(eventNum: eachEvent)
     }
 }
 
 
-//add an event with CoreData as well as EventsData and ScheduleData lists
+//add an event with CoreData as well as ScheduleData's list
 //eventNum  is the internal event number code (converted when added in ModalEventPicker.swift)
 func addEvent(eventNum: Int) -> Void {
     //adds to EventsData version
-    EventsData.selectedList.append(eventNum)
+    //EventsData.selectedList.append(eventNum) //already there-- we're adding FROM EventsData!!
     
     //add to ScheduleData list
     //let evNum = Int(DLM.dlFiles.files[0].data[eventNum][0])!
@@ -184,8 +192,8 @@ func removeEvent(eventNum: Int, indexPath: IndexPath) -> Bool {
     EventsData.selectedList.remove(at: indexPath.row)
     
     //remove from Core Data storage
-    let tmp = request.predicate
-    request.predicate = NSPredicate(format: "event = %@", eventNum) //??
+    let tmp = request.predicate //just storing for later
+    request.predicate = NSPredicate(format: "event = %ld", eventNum) //??
     var res : Bool = false
     do {
         let results = try context.fetch(request) as? [NSManagedObject]
