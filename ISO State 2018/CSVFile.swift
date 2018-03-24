@@ -27,20 +27,20 @@ func getCol(array: [[Any]], col: Int) -> [Any]? {
 class CSVFile {
     static let baseFileFolder = "https://raw.githubusercontent.com/oortsang/ISO-State-2018/master/Updatable%20Files/"
 
-    static let soEventAddress = baseFileFolder + "SciolyEvents.csv"
-    static let teamNamesAddress = baseFileFolder + "TeamNames.csv"
-    static let homeroomAddress = baseFileFolder + "Homerooms.csv"
-    static let testEventAddress = baseFileFolder + "TestEvents.csv"
-    static let buildEventAddress = baseFileFolder + "BuildEvents.csv"
-    static let schedEventAddress = baseFileFolder + "ScheduledEvents.csv"
+    static let soEventAddress = baseFileFolder + "SOEventSummary.csv"
+    static let teamsAddress = baseFileFolder + "Teams.csv"
+    static let testsAddress = baseFileFolder + "Tests.csv"
+    static let buildsAddress = baseFileFolder + "SelfScheduled.csv"
+    static let impoundAddress = baseFileFolder + "Impound.csv"
+    static let schedAddress = baseFileFolder + "ScheduledEvents.csv"
     static let locAddress = baseFileFolder + "Locations.csv"
     
     static let addressesList = [CSVFile.soEventAddress,
-                                CSVFile.teamNamesAddress,
-                                CSVFile.homeroomAddress,
-                                CSVFile.testEventAddress,
-                                CSVFile.buildEventAddress,
-                                CSVFile.schedEventAddress,
+                                CSVFile.teamsAddress,
+                                CSVFile.testsAddress,
+                                CSVFile.buildsAddress,
+                                CSVFile.impoundAddress,
+                                CSVFile.schedAddress,
                                 CSVFile.locAddress
                                ]
     
@@ -176,6 +176,8 @@ class CSVFile {
             }
             guard let data = try? Data(contentsOf: loc!) , error == nil else {return}
             //self.file = (String(data: data, encoding: .utf8))!
+            
+            print("About to process \(sourceURL)\n")
             let tmpfile = (String(data: data, encoding: .utf8))!
             if tmpfile == "" {
                 return

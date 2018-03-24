@@ -66,8 +66,15 @@ class Downloadable {
     //should be pretty quick to run
     func parse() {
         //get into 2d array
+        var allDownloaded = true
         for i in 0..<fileCount {
+            if self.files[i].data.count <= 1 {
+                allDownloaded = false
+            }
             self.files[i].parse()
+        }
+        guard allDownloaded else {
+            return
         }
         //put into proper places
         let eventNumbers = (getCol(array: self.files[0].data, col: 0) as! [String]).map{Int($0)!}

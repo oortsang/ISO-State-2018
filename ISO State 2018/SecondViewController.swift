@@ -92,25 +92,27 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             let cNum = EventsData.currentSchool
             var currentHomeroom: String
             var currentHomeroomLocCode: Int
-            let homeroomNames = getCol(array:DLM.dlFiles.files[0].data, col:3) as! [String]
-            let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[0].data, col:4) as! [String]).map{Int($0)}
-            if homeroomNames.count > cNum && cNum >= 0 {
-                //currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
-                currentHomeroom = homeroomNames[cNum]
-                currentHomeroomLocCode = homeroomLocCodes[cNum]!
-            } else {
-                currentHomeroom = "Not currently available..."
-                currentHomeroomLocCode = -1
+            if DLM.dlFiles.files[1].data.count>1 {
+                print("Homeroom file is done")
+                let homeroomNames = getCol(array:DLM.dlFiles.files[0].data, col:3) as! [String]
+                let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[0].data, col:4) as! [String]).map{Int($0)}
+                if homeroomNames.count > cNum && cNum >= 0 {
+                    //currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
+                    currentHomeroom = homeroomNames[cNum]
+                    currentHomeroomLocCode = homeroomLocCodes[cNum]!
+                } else {
+                    currentHomeroom = "Not currently available..."
+                    currentHomeroomLocCode = -1
+                }
+                self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber()) \(EventsData.roster[cNum])"
+                self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
+                EventsData.currentHomeroomLocCode = currentHomeroomLocCode
+                saveSelectedSchool(currentSchool: cNum)
             }
-            self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber()) \(EventsData.roster[cNum])"
-            self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
-            EventsData.currentHomeroomLocCode = currentHomeroomLocCode
-            saveSelectedSchool(currentSchool: cNum)
-            
             //update the table itself
             self.updateEvents()
             
-            self.schedView.reloadSections(IndexSet([0,1,2]) , with: .none)
+            self.schedView.reloadSections(IndexSet([0]) , with: .none)
             self.schedView.reloadInputViews()
         }
     }
