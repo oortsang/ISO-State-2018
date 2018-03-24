@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BA0E61AD2067001F003A209D /* ScheduledEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0E61AC2067001F003A209D /* ScheduledEvents.swift */; };
 		BA1026C51FDDFC8D00D16FBD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1026C41FDDFC8D00D16FBD /* AppDelegate.swift */; };
 		BA1026C71FDDFC8D00D16FBD /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1026C61FDDFC8D00D16FBD /* FirstViewController.swift */; };
 		BA1026C91FDDFC8D00D16FBD /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1026C81FDDFC8D00D16FBD /* SecondViewController.swift */; };
@@ -51,6 +52,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BA0E61AC2067001F003A209D /* ScheduledEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledEvents.swift; sourceTree = "<group>"; };
 		BA1026C11FDDFC8D00D16FBD /* ISO State 2018.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ISO State 2018.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1026C41FDDFC8D00D16FBD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA1026C61FDDFC8D00D16FBD /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -107,6 +109,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BA0E61AE20670029003A209D /* Schedule View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				BA0E61AC2067001F003A209D /* ScheduledEvents.swift */,
+			);
+			name = "Schedule View Controller";
+			sourceTree = "<group>";
+		};
 		BA1026B81FDDFC8D00D16FBD = {
 			isa = PBXGroup;
 			children = (
@@ -134,7 +144,8 @@
 				BAC890471FFAEFC1004B05CC /* Data Handling */,
 				BA1026C41FDDFC8D00D16FBD /* AppDelegate.swift */,
 				BAC890491FFAEFE8004B05CC /* Map View Controller */,
-				BAC890481FFAEFD2004B05CC /* Schedule View Controller */,
+				BAC890481FFAEFD2004B05CC /* Events View Controller */,
+				BA0E61AE20670029003A209D /* Schedule View Controller */,
 				BAC8904A1FFAEFFD004B05CC /* Browser View Controller */,
 				BA1026CA1FDDFC8D00D16FBD /* Main.storyboard */,
 				BA3765821FF5C39C008C4A63 /* DataStorage.xcdatamodel */,
@@ -186,7 +197,7 @@
 			name = "Data Handling";
 			sourceTree = "<group>";
 		};
-		BAC890481FFAEFD2004B05CC /* Schedule View Controller */ = {
+		BAC890481FFAEFD2004B05CC /* Events View Controller */ = {
 			isa = PBXGroup;
 			children = (
 				BA1026C81FDDFC8D00D16FBD /* SecondViewController.swift */,
@@ -194,7 +205,7 @@
 				BA1567641FF5F6CF00A49D65 /* ModalEventPicker.swift */,
 				BA1567661FF6237200A49D65 /* ModalSchoolPicker.swift */,
 			);
-			name = "Schedule View Controller";
+			name = "Events View Controller";
 			sourceTree = "<group>";
 		};
 		BAC890491FFAEFE8004B05CC /* Map View Controller */ = {
@@ -358,6 +369,7 @@
 				BA1026C91FDDFC8D00D16FBD /* SecondViewController.swift in Sources */,
 				BAC890411FFAEE8B004B05CC /* ScheduleData.swift in Sources */,
 				BA9BAE4520640C5D0021A218 /* DLManager.swift in Sources */,
+				BA0E61AD2067001F003A209D /* ScheduledEvents.swift in Sources */,
 				BA1567651FF5F6CF00A49D65 /* ModalEventPicker.swift in Sources */,
 				BAC8904C1FFB079D004B05CC /* CSVFile.swift in Sources */,
 				BA1567631FF5DEBE00A49D65 /* LaunchScreen.swift in Sources */,
