@@ -13,7 +13,6 @@ class FirstViewController: UIViewController {
     @IBOutlet weak var map: MKMapView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        //DLM.dlFiles.manualStart()
         
         //let centerLoc = CLLocationCoordinate2DMake(41.79, -87.6)
         //let mapSpan = MKCoordinateSpanMake(0.01, 0.01)

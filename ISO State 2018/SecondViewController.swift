@@ -164,62 +164,10 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     //give labels to the cells
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //print("Getting Knowledge from section \(indexPath.section), I see...")
-        var cell = tableView.dequeueReusableCell(withIdentifier: "schedule", for: indexPath)
+        var cell = tableView.dequeueReusableCell(withIdentifier: "event", for: indexPath)
         
         cell = (ScheduleData.selectedSOEvents[indexPath.row] as EventLabel).printCell(cell: cell)
         
-        /*let section = indexPath.section
-        switch section {
-        case 0:
-            //print(indexPath.row)
-            if indexPath.row < ScheduleData.earlyEvents.count {
-                //cell.textLabel!.text = (ScheduleData.earlyEvents[indexPath.row] as EventLabel).print()
-                cell = (ScheduleData.earlyEvents[indexPath.row] as EventLabel).printCell(cell: cell)
-            } else {
-                let beName = EventsData.impoundList()[indexPath.row - ScheduleData.earlyEvents.count]
-                let i = EventsData.completeList.index(of: beName)!
-                let teamBlock = Int(ceil(Float(EventsData.currentSchool)/10))
-                var loc = ""
-                var time = ""
-                //if beName == "Hovercraft" {
-                    // make sure no index-out-of-bounds error for `ScheduleData.cleanTime`
-                    if DLM.dlFiles.testEvents.data.count <= i+1 || DLM.dlFiles.testEvents.data[i+1].count <= teamBlock {
-                        time = "8:00 - 8:30 AM"
-                    } else {
-                        time = ScheduleData.cleanTime(time: DLM.dlFiles.testEvents.data[i+1][teamBlock],
-                                         duration: 30)!
-                        loc = DLM.dlFiles.testEvents.data[i+1][5]
-                    }
-//                } else {
-//                    time = "8:00 - 8:30 AM"
-//                }
-                var evName = "Impound for " + beName
-                if beName == "Hovercraft" {
-                    evName = "Written Test + " + evName
-                }
-                let buildEvent = EventLabel(name: evName, loc: loc, time: time)
-                
-                cell  = buildEvent.printCell(cell: cell)
-            }
-            break
-        case 2:
-            cell = (ScheduleData.lateEvents[indexPath.row] as EventLabel).printCell(cell: cell)
-            break
-        default:
-            // check that ScheduleData.events is not empty
-            if ScheduleData.completeSOEvents.count == 0 {
-                cell.textLabel!.text = "???"
-                cell.detailTextLabel!.text = "pls connect to the internet :|"
-            }
-            // check that we actually have a testEvents file
-            else if DLM.dlFiles.testEvents.file == "" || DLM.dlFiles.buildEvents.file == "" {
-                cell.textLabel!.text = (ScheduleData.completeSOEvents[indexPath.row] as EventLabel).name
-                cell.detailTextLabel!.text = "Entry not found: Please connect to internet"
-            } else {
-                cell = (ScheduleData.events[indexPath.row] as EventLabel).printCell(cell: cell)
-            }
-        }
-        */
         return cell
     }
 }

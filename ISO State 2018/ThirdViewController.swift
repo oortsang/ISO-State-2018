@@ -25,27 +25,31 @@ class ThirdViewController: UIViewController {
     }
     
     @IBAction func ezraFunc(_ sender: Any) {
-        let url = URL(string: "https://www.ezratech.us/competition/university-of-chicago-science-olympiad-tournament")
+        let url = URL(string: "http://www.illinoisolympiad.org/state.html")
         let request = URLRequest(url: url!)
         webview.load(request)
     }
     
     @IBAction func ucsoFunc(_ sender: Any) {
-        let url = URL(string: "https://www.uchicagoscio.com")
+        let url = URL(string: "https://app.avogadro.ws/hosted")
         let request = URLRequest(url: url!)
         webview.load(request)
     }
     
     @IBAction func shareFunc(_ sender: Any) {
+        guard webview.url == nil else {
+            return
+        }
         UIApplication.shared.open(webview.url!)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let url = URL(string: "https://www.ezratech.us/competition/university-of-chicago-science-olympiad-tournament")
+        let url = URL(string: "http://www.illinoisolympiad.org/state.html")
         let request = URLRequest(url: url!)
         webview.load(request)
+        print("asfs")
     }
         
     override func didReceiveMemoryWarning() {

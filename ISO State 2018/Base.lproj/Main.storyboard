@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="9pv-A4-QxB">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -43,21 +43,78 @@
         <!--Schedule-->
         <scene sceneID="PuE-qU-pyi">
             <objects>
-                <viewController id="dmB-Vp-e5u" sceneMemberID="viewController">
+                <viewController id="dmB-Vp-e5u" customClass="SchedViewController" customModule="ISO_State_2018" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="U62-uc-yvl">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="EJu-FE-Rj7" userLabel="Sched View">
+                                <rect key="frame" x="0.0" y="20" width="375" height="598"/>
+                                <subviews>
+                                    <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nd3-jg-Jgd">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                        <items>
+                                            <navigationItem title="Tournament Schedule" id="2qT-jm-H1u"/>
+                                        </items>
+                                    </navigationBar>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="C5R-Wh-i1e">
+                                        <rect key="frame" x="0.0" y="44" width="375" height="554"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="schedule" textLabel="xQt-ke-OEt" detailTextLabel="Yyo-FN-6oM" style="IBUITableViewCellStyleSubtitle" id="0Kb-qI-lq5">
+                                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0Kb-qI-lq5" id="YLS-n3-6wG">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xQt-ke-OEt">
+                                                            <rect key="frame" x="15" y="4" width="35" height="21.5"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Yyo-FN-6oM">
+                                                            <rect key="frame" x="15" y="25.5" width="44" height="14.5"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </tableViewCellContentView>
+                                                <gestureRecognizers/>
+                                            </tableViewCell>
+                                        </prototypes>
+                                        <connections>
+                                            <outlet property="dataSource" destination="dmB-Vp-e5u" id="duP-uI-2a5"/>
+                                            <outlet property="delegate" destination="dmB-Vp-e5u" id="wUZ-CT-uNR"/>
+                                        </connections>
+                                    </tableView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="EJu-FE-Rj7" firstAttribute="leading" secondItem="U62-uc-yvl" secondAttribute="leading" id="EfM-ea-RlF"/>
+                            <constraint firstItem="EJu-FE-Rj7" firstAttribute="bottom" secondItem="Xhj-q6-qlj" secondAttribute="bottom" id="acW-Ar-cWU"/>
+                            <constraint firstAttribute="trailing" secondItem="EJu-FE-Rj7" secondAttribute="trailing" id="azZ-FQ-dL1"/>
+                            <constraint firstItem="EJu-FE-Rj7" firstAttribute="top" secondItem="Xhj-q6-qlj" secondAttribute="top" id="bzo-e0-gvX"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="Xhj-q6-qlj"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Schedule" image="Calendar icon" id="Ry2-Vl-pO6"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="SchedView" destination="C5R-Wh-i1e" id="wKO-Bd-QL5"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="76j-AK-K0c" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1042" y="697"/>
+            <point key="canvasLocation" x="1040.8" y="696.7016491754124"/>
         </scene>
-        <!--Ezra/UCSO-->
+        <!--More Info-->
         <scene sceneID="adw-bC-srL">
             <objects>
                 <viewController id="stn-fe-INF" customClass="ThirdViewController" customModule="ISO_State_2018" customModuleProvider="target" sceneMemberID="viewController">
@@ -96,12 +153,12 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem systemItem="flexibleSpace" id="ssB-pL-AWe"/>
-                                    <barButtonItem title="Ezra" id="Pc2-RX-jdK">
+                                    <barButtonItem title="ISO" id="Pc2-RX-jdK">
                                         <connections>
                                             <action selector="ezraFunc:" destination="stn-fe-INF" id="NiQ-BB-rUI"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem title="UCSO" id="03q-pA-puz">
+                                    <barButtonItem title="Scores" id="03q-pA-puz">
                                         <connections>
                                             <action selector="ucsoFunc:" destination="stn-fe-INF" id="BhS-za-m94"/>
                                         </connections>
@@ -128,7 +185,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="vVL-8b-RlH"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Ezra/UCSO" image="Globe" id="OQB-2a-HKm"/>
+                    <tabBarItem key="tabBarItem" title="More Info" image="Globe" id="OQB-2a-HKm"/>
                     <connections>
                         <outlet property="webview" destination="GlS-7V-yXl" id="U9Z-4k-BY4"/>
                     </connections>
@@ -154,7 +211,7 @@
             </objects>
             <point key="canvasLocation" x="1780" y="83"/>
         </scene>
-        <!--Schedule-->
+        <!--Event Schedule-->
         <scene sceneID="wg7-f3-ORb">
             <objects>
                 <viewController id="8rJ-Kc-sve" customClass="SecondViewController" customModule="ISO_State_2018" customModuleProvider="target" sceneMemberID="viewController">
@@ -166,7 +223,7 @@
                                 <rect key="frame" x="0.0" y="131" width="375" height="487"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="schedule" textLabel="dk8-yx-ltR" detailTextLabel="ov7-O1-HZf" style="IBUITableViewCellStyleSubtitle" id="XhA-g9-l1w">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="event" textLabel="dk8-yx-ltR" detailTextLabel="ov7-O1-HZf" style="IBUITableViewCellStyleSubtitle" id="XhA-g9-l1w">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XhA-g9-l1w" id="gLH-gI-cud">
@@ -214,19 +271,19 @@
                         <constraints>
                             <constraint firstItem="s9l-bl-12Q" firstAttribute="leading" secondItem="3MT-5U-3B1" secondAttribute="leading" id="5kd-g8-O11"/>
                             <constraint firstItem="s9l-bl-12Q" firstAttribute="leading" secondItem="vrB-he-A39" secondAttribute="leading" id="FbX-Ia-I9Y"/>
-                            <constraint firstItem="3MT-5U-3B1" firstAttribute="trailing" secondItem="6Lx-dU-Ki6" secondAttribute="trailing" id="RCD-T5-Hws"/>
+                            <constraint firstItem="6Lx-dU-Ki6" firstAttribute="trailing" secondItem="3MT-5U-3B1" secondAttribute="trailing" id="Gts-dE-HdM"/>
                             <constraint firstItem="s9l-bl-12Q" firstAttribute="top" secondItem="KPy-1D-0Xl" secondAttribute="top" id="Vmh-O1-Nmr"/>
-                            <constraint firstItem="6Lx-dU-Ki6" firstAttribute="top" secondItem="3MT-5U-3B1" secondAttribute="bottom" constant="8" symbolic="YES" id="c8g-6n-mfW"/>
+                            <constraint firstItem="6Lx-dU-Ki6" firstAttribute="leading" secondItem="3MT-5U-3B1" secondAttribute="leading" id="cfe-UW-SOE"/>
                             <constraint firstItem="3MT-5U-3B1" firstAttribute="top" secondItem="KPy-1D-0Xl" secondAttribute="top" constant="29" id="fGj-vp-SLA"/>
-                            <constraint firstItem="6Lx-dU-Ki6" firstAttribute="bottom" secondItem="KPy-1D-0Xl" secondAttribute="bottom" id="mTg-9i-z6D"/>
-                            <constraint firstItem="3MT-5U-3B1" firstAttribute="leading" secondItem="6Lx-dU-Ki6" secondAttribute="leading" id="pDV-W8-6bS"/>
                             <constraint firstAttribute="trailing" secondItem="s9l-bl-12Q" secondAttribute="trailing" id="vKq-VA-Y8u"/>
                             <constraint firstItem="s9l-bl-12Q" firstAttribute="trailing" secondItem="3MT-5U-3B1" secondAttribute="trailing" id="wqc-bo-e0P"/>
+                            <constraint firstItem="6Lx-dU-Ki6" firstAttribute="top" secondItem="3MT-5U-3B1" secondAttribute="bottom" constant="8" symbolic="YES" id="yL8-Gf-Ycm"/>
+                            <constraint firstItem="6Lx-dU-Ki6" firstAttribute="bottom" secondItem="KPy-1D-0Xl" secondAttribute="bottom" id="zO1-zS-ogq"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="KPy-1D-0Xl"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Schedule" image="second" id="cPa-gy-q4n"/>
-                    <navigationItem key="navigationItem" title="Schedule" id="ebW-bo-zYm">
+                    <tabBarItem key="tabBarItem" title="Events" image="Calendar icon" id="cPa-gy-q4n"/>
+                    <navigationItem key="navigationItem" title="Event Schedule" id="ebW-bo-zYm">
                         <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="Fh8-z4-6xb">
                             <connections>
                                 <action selector="refreshData:" destination="8rJ-Kc-sve" id="qNw-XK-mJ7"/>
@@ -263,7 +320,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="pWZ-jC-tDT">
+                        <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="pWZ-jC-tDT">
                             <rect key="frame" x="0.0" y="116" width="375" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Add an Event"/>
@@ -429,6 +486,5 @@
         <image name="backButton" width="13" height="21"/>
         <image name="big_gear" width="20" height="20"/>
         <image name="forwardButton" width="13" height="21"/>
-        <image name="second" width="30" height="30"/>
     </resources>
 </document>

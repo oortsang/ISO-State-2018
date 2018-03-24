@@ -12,7 +12,7 @@ class TableViewController: UITableViewController {
     //reload table data when it's opened
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(EventsData.selectedList)
+        //print(EventsData.selectedList)
         reloadTableData()
     }
     
@@ -104,7 +104,7 @@ class TableViewController: UITableViewController {
             }
         }
         EventsData.selectedList = tmp
-        print("cleaning duplicates and have \(tmp.count) selected events")
+        //print("cleaning duplicates and have \(tmp.count) selected events")
         saveEvents()
     }
     

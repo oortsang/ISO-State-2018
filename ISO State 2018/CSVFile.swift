@@ -114,7 +114,7 @@ class CSVFile {
             let results = try CSVFile.fileContext.fetch(CSVFile.fileRequest)
             //print("I have this many results: ",results.count)
             if results.count > 0 {
-                print(results)
+                //print(results)
                 let result = results.first
                 /*if let loadedData = (result as! NSManagedObject).value(forKey:"data") {
                     self.file = loadedData as! String

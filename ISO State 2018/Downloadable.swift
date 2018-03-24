@@ -19,7 +19,7 @@ class Downloadable {
         DispatchQueue.main.async {
             for i in 0..<self.fileCount {
                 self.files[i].load(fileName: self.fileNames[i])
-                print("Loaded \(self.fileNames[i])")
+                //print("Loaded \(self.fileNames[i])")
             }
             self.parse()
         }
@@ -95,7 +95,7 @@ class Downloadable {
             if self.files[i].file.count < 1 {
                 allDownloaded = false
                 //break
-                print("\(self.fileNames[i]) is not ready to be parsed")
+                //print("\(self.fileNames[i]) is not ready to be parsed")
                 return
             }
         }
