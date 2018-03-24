@@ -23,6 +23,10 @@ class Locs {
         }
         return nil
     }
+    
+    static func locCoder(input: String) -> Int {
+        return Int(input) ?? -1
+    }
 }
 /*let locList: [(String, String, Double, Double)]
     = [ ("BSLC", "Biological Sciences Learning Center", 41.7918, -87.6026288),

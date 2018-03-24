@@ -82,6 +82,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     
     //on download finish
     @objc func onDownloadSummoned () {
+        print("Download ready! *** Downloads in progress: \(DLM.dlFiles.downloadInProgress)")
         DLM.dlFiles.finishUpdate()
         updateSchoolAndTable()
     }
@@ -99,14 +100,14 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             let cNum = EventsData.currentSchool
             var currentHomeroom: String
             var currentHomeroomLocCode: Int
-            if DLM.dlFiles.files[1].data.count>1 {
+            if DLM.dlFiles.files[1].data.count>1 && EventsData.roster.count > 0 {
                 print("Homeroom file is done")
-                let homeroomNames = getCol(array:DLM.dlFiles.files[1].data, col:3) as! [String]
-                let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[1].data, col:4) as! [String]).map{Int($0)}
+                let homeroomNames = getCol(array:DLM.dlFiles.files[1].data, col:4) as! [String]
+                let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[1].data, col:5) as! [String]).map{Locs.locCoder(input: $0)}
                 if homeroomNames.count > cNum && cNum >= 0 {
                     //currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
                     currentHomeroom = homeroomNames[cNum]
-                    currentHomeroomLocCode = homeroomLocCodes[cNum]!
+                    currentHomeroomLocCode = homeroomLocCodes[cNum]
                 } else {
                     currentHomeroom = "Not currently available..."
                     currentHomeroomLocCode = -1

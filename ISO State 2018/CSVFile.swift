@@ -93,7 +93,7 @@ class CSVFile {
         newFile.setValue (name, forKey: "fileName") //make an entry title
         newFile.setValue(self.file, forKey: "data") //put the string in it
 
-        print("saved under \(name): \(self.file)")
+        //print("saved under \(name): \(self.file)")
 
         do {
             try CSVFile.fileContext.save()
@@ -187,7 +187,7 @@ class CSVFile {
                 return
             }
             self.file = tmpfile
-            print("Just downloaded \(sourceURL): \n\(self.file)")
+            //print("Just downloaded \(sourceURL): \n\(self.file)")
             //print("This is such a cool file! \(self.file)")
             self.parse()
             self.sendDownloadNotification()

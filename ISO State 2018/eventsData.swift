@@ -35,7 +35,7 @@ class EventsData: NSObject {
     //get current schoool's time block
     static func currentTimeBlock() -> Int? {
         let teamInfo = DLM.dlFiles.files[1].data
-        return Int(teamInfo[currentSchool][4])
+        return Int(teamInfo[currentSchool][6])
     }
     //completeSOEventList = ["Anatomy & Physiology", "Astronomy", "Chemistry Lab", "Disease Detectives", "Dynamic Planet", "Ecology", "Experimental Design", "Fermi Questions", "Forensics", "Game On", "Helicopters", "Herpetology", "Hovercraft", "Materials Science", "Microbe Mission", "Mission Possible", "Mousetrap Vehicle", "Optics", "Remote Sensing", "Rocks & Minerals", "Thermodynamics", "Towers", "Write It Do It"]
     //soEventProperties = ...

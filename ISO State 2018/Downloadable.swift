@@ -42,22 +42,23 @@ class Downloadable {
     
     //save and parse
     func finishUpdate() {
-        print("One Download is finished")
-        for i in 0..<self.fileCount {
+        //print("One Download is finished")
+        /*for i in 0..<self.fileCount {
             print("For the \(i)th file, we have: \n\(self.files[i].file)")
-        }
+        }*/
         
         self.save()
+        print("saved")
         self.parse()
     }
     //saves all the tracked files
     func save() {
-        DispatchQueue.main.async {
-            for i in 0..<self.fileCount {
-                print("About to save \(self.fileNames[i])")
-                self.files[i].save(name: self.fileNames[i])
-            }
+        //DispatchQueue.main.async {
+        for i in 0..<self.fileCount {
+            //print("About to save \(self.fileNames[i])")
+            self.files[i].save(name: self.fileNames[i])
         }
+        //}
     }
     //to try to start early
     func manualStart() {
@@ -84,10 +85,11 @@ class Downloadable {
     
     //should be pretty quick to run
     func parse() {
+        print("Starting parse")
         //get into 2d array
         var allDownloaded = true
         for i in 0..<fileCount {
-            if self.files[i].data.count <= 1 {
+            if self.files[i].data.count < 1 {
                 allDownloaded = false
             }
             self.files[i].parse()
@@ -184,61 +186,3 @@ class Downloadable {
         //behavior seems to be that it makes a full copy rather than just passing a pointer...
     }
 }
-
-/*class Downloadable {
-    let homerooms = CSVFile()
-    let testEvents = CSVFile()
-    let buildEvents = CSVFile()
-    var downloadInProgress = false
-    
-    //start the downloads
-    func beginUpdate() {
-    	//don't start if a download is already in progress
-    	if self.downloadInProgress {
-            print("Download already in progress!")
-            return
-        } else {
-            print("Download NOT already in progress!!!! How shocking!")
-        }
-        self.downloadInProgress = true
-        self.homerooms.downloadFile(sourceURL: CSVFile.homeroomAddress)
-        self.testEvents.downloadFile(sourceURL: CSVFile.testEventAddress)
-        self.buildEvents.downloadFile(sourceURL: CSVFile.buildEventAddress)
-    }
-    
-    //save and parse
-    func finishUpdate() {
-        self.downloadInProgress = false
-        self.save()
-        self.parse()
-    }
-    
-    func save() {
-        DispatchQueue.main.async {
-            self.homerooms.save(name: "homerooms")
-            self.testEvents.save(name: "testevents")
-            self.buildEvents.save(name: "buildevents")
-        }
-    }
-    
-    func parse() {
-        self.homerooms.parse()
-        self.testEvents.parse()
-        self.testEvents.parse()
-    }
-    func load() {
-        DispatchQueue.main.async {
-            self.homerooms.load(fileName: "homerooms")
-            self.testEvents.load(fileName: "testevents")
-            self.buildEvents.load(fileName: "buildevents")
-        }
-    }
-    
-    //initialize the files
-    init() {
-        self.load()
-        self.beginUpdate()
-        // Notification center hasn't started up yet
-        self.downloadInProgress = false
-    }
-}*/
