@@ -96,7 +96,7 @@ class Downloadable {
             let locCode = Int(info[4]) ?? -1
             
             let tmpTime = info[4+cTB!]
-            let dur = (info[2]=="") ? 50 : Int(info[2])!
+            let dur = (info[2]=="") ? 50 : Int(info[2])! //timeblock events are 50 minutes unless otherwise specified
             let evTime = ScheduleData.formatTime(time: tmpTime, duration: dur)!
             let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
@@ -119,7 +119,8 @@ class Downloadable {
             let evNum = Int(info[0])!
             let (evName, loc) = (info[1], info[3])
             let locCode = Int(info[4]) ?? -1
-            let evTime = ScheduleData.formatTime(time: info[5], duration: Int(info[2])!)!
+            let dur = (info[2]=="") ? 60 : Int(info[2])! //putting default duration of impound as 1 hour
+            let evTime = ScheduleData.formatTime(time: info[5], duration: dur)!
             let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }

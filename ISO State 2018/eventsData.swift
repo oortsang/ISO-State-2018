@@ -104,7 +104,7 @@ class EventsData: NSObject {
 }
 
 func stringToBool(s: String) -> Bool {
-    if s == "1" {return true}
+    if s == "1" || s.uppercased() == "C" || s.uppercased() == "Y" {return true} //takes care of div C/div B stuff easily
     else {return false}
 }
 
