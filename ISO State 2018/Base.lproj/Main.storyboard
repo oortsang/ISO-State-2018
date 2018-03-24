@@ -374,7 +374,7 @@
                                 <viewLayoutGuide key="safeArea" id="IaL-ly-M3n"/>
                                 <items>
                                     <navigationItem title="Choose School" id="F0F-6t-MCq">
-                                        <barButtonItem key="rightBarButtonItem" title="Done" id="rzi-Dj-gos">
+                                        <barButtonItem key="leftBarButtonItem" title="Done" id="rzi-Dj-gos">
                                             <connections>
                                                 <action selector="doneButton:" destination="Rd0-Kd-Vwo" id="OVA-Xg-3bF"/>
                                             </connections>

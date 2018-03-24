@@ -9,11 +9,11 @@
 import Foundation
 import CoreData
 
-extension Notification.Name {
+/*extension Notification.Name {
     static let downloadFinished = Notification.Name("downloadFinished")
     //static let reload = Notification.Name("reload")
     //static let reloadSchoolName = Notification.Name("reloadSchool")
-}
+}*/
 
 func getCol(array: [[Any]], col: Int) -> [Any]? {
     var tmp: [Any] = []
@@ -43,7 +43,7 @@ class CSVFile {
                                 CSVFile.schedAddress,
                                 CSVFile.locAddress
                                ]
-    
+    var whichFile: Int = -1//for debugging
     var data: [[String]] = [[]]
     var file: String = ""
     
@@ -62,11 +62,11 @@ class CSVFile {
         if self.file == "" {
             return
         }
-        let rows: [String] = file.components(separatedBy: "\r\n")
+        let rows: [String] = file.components(separatedBy: "\n")
         if rows.count > 1 { //want to make sure it's not just an empty string
             var data: [[String]] = []
-            for row in rows {
-                let content = row.components(separatedBy: ",")
+            for i in 1..<rows.count {
+                let content = rows[i].components(separatedBy: ",")
                 if content != [""] {
                     data.append(content)
                 }
@@ -93,7 +93,7 @@ class CSVFile {
         newFile.setValue (name, forKey: "fileName") //make an entry title
         newFile.setValue(self.file, forKey: "data") //put the string in it
 
-        //print("HOORAY! self.file:  \(self.file)")
+        print("saved under \(name): \(self.file)")
 
         do {
             try CSVFile.fileContext.save()
@@ -113,6 +113,7 @@ class CSVFile {
             let results = try CSVFile.fileContext.fetch(CSVFile.fileRequest)
             //print("I have this many results: ",results.count)
             if results.count > 0 {
+                print(results)
                 let result = results.first
                 if let loadedData = (result as! NSManagedObject).value(forKey:"data") {
                     self.file = loadedData as! String
@@ -168,22 +169,26 @@ class CSVFile {
         let task = URLSession.shared.downloadTask(with: url!) { loc, resp, error in
             if let error = error {
                 print("Error: \(error); not updated")
+                DLM.dlFiles.downloadInProgress -= 1
                 return
             }
             guard let httpResponse = resp as? HTTPURLResponse,
                 (200...299).contains(httpResponse.statusCode) else {
-                    return
+                DLM.dlFiles.downloadInProgress -= 1
+                return
             }
+            DLM.dlFiles.downloadInProgress -= 1 //keep track instantly...
+            
             guard let data = try? Data(contentsOf: loc!) , error == nil else {return}
             //self.file = (String(data: data, encoding: .utf8))!
             
-            print("About to process \(sourceURL)\n")
             let tmpfile = (String(data: data, encoding: .utf8))!
             if tmpfile == "" {
                 return
             }
             self.file = tmpfile
-            print("This is such a cool file! \(self.file)")
+            print("Just downloaded \(sourceURL): \n\(self.file)")
+            //print("This is such a cool file! \(self.file)")
             self.parse()
             self.sendDownloadNotification()
         }

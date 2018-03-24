@@ -1,4 +1,4 @@
-/*
+
 //
 //  Notifications.swift
 //  UCSO Invitational 2018
@@ -15,4 +15,4 @@ extension Notification.Name {
     //static let reload = Notification.Name("reload")
     //static let reloadSchoolName = Notification.Name("reloadSchool")
 }
-*/
+

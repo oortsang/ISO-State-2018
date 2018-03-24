@@ -13,7 +13,7 @@ class LaunchScreen: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Has DLM.dlFiles already been initialized?")
-        DLM.dlFiles.beginUpdate()
+        DLM.dlFiles.manualStart()
     }
 
     override func didReceiveMemoryWarning() {

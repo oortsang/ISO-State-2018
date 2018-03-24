@@ -23,6 +23,9 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     @IBAction func refreshData(_ sender: UIBarButtonItem) {
         DLM.dlFiles.beginUpdate() //table gets refreshed if download finishes
         //NotificationCenter.default.post(name: .reloadSchoolName, object:nil)
+        print(DLM.dlFiles.files[1].data)
+        print(DLM.dlFiles.files[1].file)
+        
     }
 
     //called every time the view is brought to view
@@ -42,12 +45,16 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         updateSchoolAndTable()
         
 
-        NotificationCenter.default.addObserver(self, selector: #selector(onDownloadSummoned), name: .downloadFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onDownloadSummoned), name: .downloadFinished, object: nil) //Not sure this is working...
         
         //extra detail by tapping on a cell
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(onTap))
         recognizer.delegate = self as? UIGestureRecognizerDelegate
         schedView.addGestureRecognizer(recognizer)
+        
+        if DLM.dlFiles.downloadInProgress == 0 {
+            DLM.dlFiles.finishUpdate()
+        }
     }
     
     //handle taps on the UITableView
@@ -94,8 +101,8 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             var currentHomeroomLocCode: Int
             if DLM.dlFiles.files[1].data.count>1 {
                 print("Homeroom file is done")
-                let homeroomNames = getCol(array:DLM.dlFiles.files[0].data, col:3) as! [String]
-                let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[0].data, col:4) as! [String]).map{Int($0)}
+                let homeroomNames = getCol(array:DLM.dlFiles.files[1].data, col:3) as! [String]
+                let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[1].data, col:4) as! [String]).map{Int($0)}
                 if homeroomNames.count > cNum && cNum >= 0 {
                     //currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
                     currentHomeroom = homeroomNames[cNum]

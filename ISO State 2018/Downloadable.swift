@@ -12,7 +12,7 @@ class Downloadable {
     let fileCount = 7
     let files: [CSVFile] //initialized in the Downloadable init() function
     let fileNames = ["soevents", "teams", "tests", "builds", "impounds",  "scheduledevents", "locations"]
-    var downloadInProgress = false
+    var downloadInProgress = 0
 
     //load from disk
     func load() {
@@ -26,22 +26,27 @@ class Downloadable {
     //start the downloads
     func beginUpdate() {
         //don't start if a download is already in progress
-        if self.downloadInProgress {
+        if self.downloadInProgress != 0 {
             print("Download already in progress!")
             return
         } else {
             print("Download NOT already in progress!!!! How shocking!")
         }
-        self.downloadInProgress = true
+        self.downloadInProgress += fileCount
         //save each file
         for i in 0..<self.fileCount {
             self.files[i].downloadFile(sourceURL: CSVFile.addressesList[i])
+            
         }
     }
     
     //save and parse
     func finishUpdate() {
-        self.downloadInProgress = false
+        print("One Download is finished")
+        for i in 0..<self.fileCount {
+            print("For the \(i)th file, we have: \n\(self.files[i].file)")
+        }
+        
         self.save()
         self.parse()
     }
@@ -49,18 +54,32 @@ class Downloadable {
     func save() {
         DispatchQueue.main.async {
             for i in 0..<self.fileCount {
+                print("About to save \(self.fileNames[i])")
                 self.files[i].save(name: self.fileNames[i])
             }
         }
     }
-
-    //initialize the files
-    init() {
-        self.files = [CSVFile](repeating: CSVFile(), count: self.fileCount)
+    //to try to start early
+    func manualStart() {
         self.load()
         self.beginUpdate()
+        self.downloadInProgress = 0
+    }
+    
+    //initialize the files
+    init() {
+        //self.files = [CSVFile](repeating: CSVFile(), count: self.fileCount)
+        var tmp: [CSVFile] = []
+        for i in 0..<self.fileCount {
+            tmp.append(CSVFile())
+            tmp[i].whichFile = i
+        }
+        files = tmp
+        /*self.load()
+        self.beginUpdate()
         //Notification center hasn't started up yet
-        self.downloadInProgress = false
+        self.downloadInProgress = 0
+         */
     }
     
     //should be pretty quick to run
@@ -77,16 +96,20 @@ class Downloadable {
             return
         }
         //put into proper places
+        //file 0
         let eventNumbers = (getCol(array: self.files[0].data, col: 0) as! [String]).map{Int($0)!}
         EventsData.soEventNumbers = eventNumbers
         EventsData.completeSOEventList = getCol(array: self.files[0].data, col: 1) as! [String]
         EventsData.soEventProperties = (self.files[0].data as [[String]]).map{
             $0[2...].map{stringToBool(s: $0)}
         }
-        EventsData.roster = getCol(array: self.files[1].data, col: 2) as! [String]
-        EventsData.homerooms = getCol(array: self.files[1].data, col: 3) as! [String]
+        //file 1
+        EventsData.roster = getCol(array: self.files[1].data, col: 3) as! [String]
+        //EventsData.homerooms = getCol(array: self.files[1].data, col: 4) as! [String]
+        EventsData.officialNumbers = (getCol(array: self.files[1].data, col:1) as! [String]).map{Int($0)!}
         //EventsData.soEventLookup = Array<(Int, String)>(zip(eventNumbers, EventsData.completeSOEventList))
         
+        //the rest of the files
         self.prepareSOEvents()
         self.prepareSchedEvents()
         self.prepareLocations()
@@ -95,10 +118,11 @@ class Downloadable {
     //load the scioly events from the downloaded/loaded CSVs into ScheduleData.completeSOEvents
     func prepareSOEvents() -> Void {
         var tmp: [EventLabel] = []
+        let cTB = EventsData.currentTimeBlock()
         //add contributions from file 2, testing events
         for i in 0..<self.files[2].data.count {
             let info = self.files[2].data[i]
-            let cTB = EventsData.currentTimeBlock()
+            print (info)
             let (evNum, evName, loc) = (Int(info[0])!, info[1], info[3])
             let locCode = Int(info[4]) ?? -1
             

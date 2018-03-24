@@ -19,21 +19,23 @@ class EventsData: NSObject {
     static var soEventNumbers: [Int] = [] //stores the Event Numbers in the same order as they appear in ED.copmleteSOEventList
     static var soEventProperties: [[Bool]] = [] //store division (if C), trial, test, self-scheduled, impound info
     static var roster: [String] = [] //load up outside
+    static var officialNumbers: [Int] = [] //real official numbers
     static var currentSchool = 0 //This is actually different from the team number because of the fact that there's division B and C -- use a unique identifier internally
     static var currentHomeroomLocCode = -1//fill externally
-    static var homerooms:[String] = [] //can do homerooms[currentSchool]
-    
+    //static var homerooms:[String] = [] //can do homerooms[currentSchool]
+    //static var curDivIsC = true //by default for now...
     static func teamNumber() -> Int {
         return Int(DLM.dlFiles.files[1].data[currentSchool][0])!
     }
     
     //get current division as a bool: true for C, false for B
-    static func currentlyDivC() -> Bool {
+    static func curDivC() -> Bool {
         return stringToBool(s: DLM.dlFiles.files[1].data[currentSchool][1])
     }
     //get current schoool's time block
     static func currentTimeBlock() -> Int? {
-        return Int(DLM.dlFiles.files[1].data[currentSchool][4])
+        let teamInfo = DLM.dlFiles.files[1].data
+        return Int(teamInfo[currentSchool][4])
     }
     //completeSOEventList = ["Anatomy & Physiology", "Astronomy", "Chemistry Lab", "Disease Detectives", "Dynamic Planet", "Ecology", "Experimental Design", "Fermi Questions", "Forensics", "Game On", "Helicopters", "Herpetology", "Hovercraft", "Materials Science", "Microbe Mission", "Mission Possible", "Mousetrap Vehicle", "Optics", "Remote Sensing", "Rocks & Minerals", "Thermodynamics", "Towers", "Write It Do It"]
     //soEventProperties = ...
