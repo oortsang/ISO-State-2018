@@ -177,7 +177,7 @@ class Downloadable {
         var tmp: [(String, String, Int, Double, Double)] = []  
         //load from file 6, the location coordinates
         for i in 0..<self.files[6].data.count {
-            let info: [String] = self.files[5].data[i]
+            let info: [String] = self.files[6].data[i]
             let locCode = Int(info[2])!
             let latlong = Array(info[3...]).map{Double($0)!}
             tmp.append((info[0], info[1], locCode, latlong[0], latlong[1]))
