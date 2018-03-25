@@ -54,9 +54,8 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
     //add the current selection into the events list
     @IBAction func addButton(_ sender: Any) {
         let row = eventPicker.selectedRow(inComponent: 0)
-        let eventNum = row+1
+        let eventNum = (EventsData.div == "C") ? EventsData.divXEvents(div: "C")[row] : EventsData.divXEvents(div: "B")[row]
         if !(EventsData.selectedList.contains(eventNum)) {
-            //print("\(EventsData.completeSOEventList[eventNum]) added!")
             addEvent(eventNum: eventNum) //save to disk and ScheduleData
             EventsData.selectedList.append(eventNum)
             cancelButton(addButton)

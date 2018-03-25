@@ -131,12 +131,15 @@ func addEvent(eventNum: Int) -> Void {
     
     //add to ScheduleData list
     //let evNum = Int(DLM.dlFiles.files[0].data[eventNum][0])!
-    guard let evLabel = ScheduleData.getEventFromNumber(evNum: eventNum) else {
+    let evLabels = ScheduleData.getEventsFromNumber(evNum: eventNum)
+    if evLabels.count == 0 {
         print("Couldn't add event! Maybe the files aren't available")
         return
+    } else {
+        for ev in evLabels {
+            ScheduleData.selectedSOEvents.append(ev)
+        }
     }
-    ScheduleData.selectedSOEvents.append(evLabel)
-    
     //save to CoreData
     let newEventThing = NSEntityDescription.insertNewObject(forEntityName: "Events", into: context)
     newEventThing.setValue (eventNum, forKey: "event")

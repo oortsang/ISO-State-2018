@@ -56,10 +56,15 @@ class ScheduleData {
     static var completeSOEvents: [EventLabel] = []
     static var schedEvents: [EventLabel] = [] //arrange by date...
 
+    static func reorganize() {
+        ScheduleData.selectedSOEvents = orderEvents(eventList: selectedSOEvents)
+        print (ScheduleData.selectedSOEvents.map{$0.time})
+    }
+    
     
     //returns a list of events in chronological/alphabetical order
     static func orderEvents(eventList: [EventLabel]) -> [EventLabel] {
-        return eventList.sorted(by: ScheduleData.comesBefore)
+        return eventList.sorted(by: comesBefore)
     }
     
     //returns whether first event happens before the second event
@@ -78,7 +83,8 @@ class ScheduleData {
         }
         let (t1, t2) = (ev1.getTime()!, ev2.getTime()!)
         let (s1, s2) = (t1.index(of: " ")!, t2.index(of: " ")!)
-        let (amInd1, amInd2) = (t1.index(s1, offsetBy: 1), t2.index(s2, offsetBy: 1))
+        let (mm1, mm2) = (t1.index(of: "M")!, t2.index(of: "M")!)
+        let (amInd1, amInd2) = (t1.index(mm1, offsetBy: -1), t2.index(mm2, offsetBy: -1))
         let (am1, am2) = (String(t1[amInd1]).first!, String(t2[amInd2]).first!)
         //if one is in the morning but the other is in the afternoon
         if am1 != am2 {
@@ -181,14 +187,15 @@ class ScheduleData {
     
     //retrieves the event in the complete SOEvent list that matches requested event number
     //there *should* only be one result, but this only returns the first
-    static func getEventFromNumber(evNum: Int, completeList: Bool = true) -> EventLabel? {
-        let events = completeList ? ScheduleData.completeSOEvents : ScheduleData.selectedSOEvents
+    static func getEventsFromNumber(evNum: Int, completeList: Bool = true) -> [EventLabel] {
+        let events = completeList ? completeSOEvents : selectedSOEvents
+        var list: [EventLabel] = []
         for event in events {
             if event.num == evNum {
-                return event
+                list.append(event)
             }
         }
-        return nil
+        return list //could be empty
     }
     
 }

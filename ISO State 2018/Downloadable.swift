@@ -43,14 +43,7 @@ class Downloadable {
     
     //save and parse
     func finishUpdate() {
-        //print("One Download is finished")
-        /*for i in 0..<self.fileCount {
-            print("For the \(i)th file, we have: \n\(self.files[i].file)")
-        }*/
-        
         self.save()
-        //print("saved")
-        //self.parse()
     }
     //saves all the tracked files
     func save() {
@@ -112,9 +105,8 @@ class Downloadable {
         }
         //file 1
         EventsData.roster = getCol(array: self.files[1].data, col: 3) as! [String]
-        //EventsData.homerooms = getCol(array: self.files[1].data, col: 4) as! [String]
         EventsData.officialNumbers = (getCol(array: self.files[1].data, col:1) as! [String]).map{Int($0)!}
-        //EventsData.soEventLookup = Array<(Int, String)>(zip(eventNumbers, EventsData.completeSOEventList))
+        
         
         //the rest of the files
         self.prepareSOEvents()
@@ -159,7 +151,8 @@ class Downloadable {
             let locCode = Int(info[4]) ?? -1
             let dur = (info[2]=="") ? 60 : Int(info[2])! //putting default duration of impound as 1 hour
             let evTime = ScheduleData.formatTime(time: info[5], duration: dur)!
-            let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
+            let evTitle = "Impound for \(evName)"
+            let entry = EventLabel(num: evNum, name: evTitle, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }
         ScheduleData.completeSOEvents = ScheduleData.orderEvents(eventList: tmp) //reordered by time

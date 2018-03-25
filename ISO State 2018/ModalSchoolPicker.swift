@@ -94,7 +94,15 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     @IBAction func doneButton(_ sender: Any) {
         let row = schoolPicker.selectedRow(inComponent: 0)
         EventsData.currentSchool = row
+        
+        let oldDiv = EventsData.div
         EventsData.div = row<numDivB ? "B" : "C"
+        
+        if EventsData.div != oldDiv {
+            EventsData.selectedList = []
+            ScheduleData.selectedSOEvents = []
+            clearEvents()
+        }
         
         print("Selected Division: \(EventsData.div)")
         print("Internal Number: \(EventsData.currentSchool)")

@@ -14,19 +14,6 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var schoolTitle: UITextField!
     @IBOutlet weak var homeroomLocation: UITextField!
     @IBOutlet weak var schedView: UITableView!
-    
-
-    //var homeroomFile = CSVFile()
-    //var dlFiles = Downloadable()
-    
-    // Get the refresh button to refresh
-    @IBAction func refreshData(_ sender: UIBarButtonItem) {
-        DLM.dlFiles.beginUpdate() //table gets refreshed if download finishes
-        //NotificationCenter.default.post(name: .reloadSchoolName, object:nil)
-        //print(DLM.dlFiles.files[1].data)
-        //print(DLM.dlFiles.files[1].file)
-        
-    }
 
     //called every time the view is brought to view
     override func viewDidAppear(_ animated: Bool) {
@@ -84,6 +71,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     @objc func onDownloadSummoned () {
         //print("Download ready! *** Downloads in progress: \(DLM.dlFiles.downloadInProgress)")
         DLM.dlFiles.finishUpdate()
+        EventsData.div = DLM.dlFiles.files[1].data[EventsData.currentSchool][2].first!
         updateSchoolAndTable()
     }
     
@@ -119,6 +107,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
                 saveSelectedSchool(currentSchool: cNum)
             }
             //update the table itself
+            ScheduleData.reorganize()
             self.updateEvents()
             
             self.schedView.reloadSections(IndexSet([0]) , with: .none)
@@ -142,11 +131,13 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         }
         for i in 0..<EventsData.selectedList.count { //for each active event, as accounted by EventsData
             let evnc: Int = EventsData.selectedList[i] //event number code
-            guard let newEvLab: EventLabel = ScheduleData.getEventFromNumber(evNum: evnc) else {
-                print("Couldn't Fetch data for event \(evnc)")
-                continue
+            let newEvLab: [EventLabel] = ScheduleData.getEventsFromNumber(evNum: evnc)
+            if newEvLab.count == 0 {
+                print("No events to add!")
             }
-            elList.append(newEvLab)
+            for ev in newEvLab {
+                elList.append(ev)
+            }
         }
         ScheduleData.selectedSOEvents = ScheduleData.orderEvents(eventList: elList)
         //print("At the end of updateEvents, there are \(ScheduleData.events.count) events")

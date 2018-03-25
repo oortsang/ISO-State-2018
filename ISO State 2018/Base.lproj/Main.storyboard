@@ -284,11 +284,6 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Events" image="Calendar icon" id="cPa-gy-q4n"/>
                     <navigationItem key="navigationItem" title="Event Schedule" id="ebW-bo-zYm">
-                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="Fh8-z4-6xb">
-                            <connections>
-                                <action selector="refreshData:" destination="8rJ-Kc-sve" id="qNw-XK-mJ7"/>
-                            </connections>
-                        </barButtonItem>
                         <rightBarButtonItems>
                             <barButtonItem image="big_gear" id="LnQ-Mc-9j1">
                                 <connections>
@@ -320,7 +315,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="pWZ-jC-tDT">
+                        <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="pWZ-jC-tDT">
                             <rect key="frame" x="0.0" y="116" width="375" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Add an Event"/>
