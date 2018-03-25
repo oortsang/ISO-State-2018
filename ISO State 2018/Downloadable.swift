@@ -19,7 +19,6 @@ class Downloadable {
         DispatchQueue.main.async {
             for i in 0..<self.fileCount {
                 self.files[i].load(fileName: self.fileNames[i])
-                //print("Loaded \(self.fileNames[i])")
             }
             self.parse()
         }
@@ -27,15 +26,6 @@ class Downloadable {
     
     //start the downloads
     func beginUpdate() {
-        //don't start if a download is already in progress
-        /*if self.downloadInProgress != 0 {
-            //print("Download already in progress!")
-            return
-        } else {
-            //print("Download NOT already in progress!!!! How shocking!")
-        }*/
-        //self.downloadInProgress += fileCount
-        //save each file
         for i in 0..<self.fileCount {
             self.files[i].downloadFile(sourceURL: CSVFile.addressesList[i])
         }
@@ -45,11 +35,11 @@ class Downloadable {
     func finishUpdate() {
         self.save()
     }
+    
     //saves all the tracked files
     func save() {
         DispatchQueue.main.async {
             for i in 0..<self.fileCount {
-                //print("About to save \(self.fileNames[i])")
                 self.files[i].save(name: self.fileNames[i])
             }
         }
@@ -60,7 +50,6 @@ class Downloadable {
     func manualStart() {
         self.load()
         self.beginUpdate()
-        //self.downloadInProgress = 0
     }
     
     //initialize the files

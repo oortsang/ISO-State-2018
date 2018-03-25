@@ -79,11 +79,6 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     //called by onDownloadSummoned and onViewDidAppear
     @objc func updateSchoolAndTable() {
         DispatchQueue.main.async() {
-            //update team info
-            /*let sNumber = EventsData.teamNumber()!
-            if DLM.dlFiles.homerooms.data.count > 1 {
-                ScheduleData.updateHomerooms(dataFile: DLM.dlFiles.homerooms)
-            }*/
             
             let cNum = EventsData.currentSchool
             var currentHomeroom: String
