@@ -27,10 +27,27 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         return 1
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return EventsData.roster.count
+        //return EventsData.roster.count //mixes B and C
+        let divTeams = EventsData.divXTeams(EventsData.div) //retrieve the appropriate team list
+        return divTeams.count
     }
+    
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return String("(\(row+1)) \(EventsData.roster[row])")
+        //return String("(\(EventsData.teamNumber())) \(EventsData.roster[row])")
+        //get the internal team number corresponding to the entry in question
+        let divTeams = EventsData.divXTeams(EventsData.div)
+        let internalTeamNum = divTeams[row]
+        
+        //want to get the official number now
+        //first we need to find the actual index (rather than the internal one)
+        let teamsData = DLM.dlFiles[1].data
+        let internalNumberList = getCol(array: teamsData, col: 0)!.map{Int($0)!}
+        let actualIndex = internalNumberList.index(of: internalTeamNum)!
+        let officialTeamNum = EventsData.officialNumbers[actualIndex]
+        
+        let teamNumStr = "(\(officialTeamNum)\(EventsData.div)) "
+        let teamEntry = teamNumStr + EventsData.roster[actualIndex]
+        return teamEntry
     }
     
     @IBAction func doneButton(_ sender: Any) {
