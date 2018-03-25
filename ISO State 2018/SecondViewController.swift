@@ -32,7 +32,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         updateSchoolAndTable()
         
 
-        NotificationCenter.default.addObserver(self, selector: #selector(onDownloadSummoned), name: .downloadFinished, object: nil) //Not sure this is working...
+        NotificationCenter.default.addObserver(self, selector: #selector(onDownloadSummoned), name: .downloadFinished, object: nil)
         
         //extra detail by tapping on a cell
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(onTap))
@@ -71,7 +71,6 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     @objc func onDownloadSummoned () {
         //print("Download ready! *** Downloads in progress: \(DLM.dlFiles.downloadInProgress)")
         DLM.dlFiles.finishUpdate()
-        EventsData.div = DLM.dlFiles.files[1].data[EventsData.currentSchool][2].first!
         updateSchoolAndTable()
     }
     
@@ -95,6 +94,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
                     currentHomeroom = "Not currently available..."
                     currentHomeroomLocCode = -1
                 }
+                EventsData.div = DLM.dlFiles.files[1].data[cNum][2].first!
                 self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])"
                 //print("Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])")
                 self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"

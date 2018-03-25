@@ -1,4 +1,4 @@
-//
+  //
 //  Downloadables.swift
 //  UCSO Invitational 2018
 //
@@ -171,5 +171,6 @@ class Downloadable {
         }
         Locs.locList = tmp //apparently this is okay despite the scopes changing
         //behavior seems to be that it makes a full copy rather than just passing a pointer...
+        //Map will be called by notification dude
     }
 }

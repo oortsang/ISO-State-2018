@@ -45,14 +45,15 @@ class Locs {
         ("Stuart", "Stuart Hall", 41.788608, -87.598713)
     ]*/
 
-struct MyList {
+class MyList {
     static var locPoints = [MKPointAnnotation]()
     
     static func initiate() -> Void {
-        for elm in Locs.locList{
+        locPoints = []
+        for elm in Locs.locList {
             let an = MKPointAnnotation()
-            an.title = elm.0
-            an.subtitle = elm.1
+            an.title = elm.1
+            an.subtitle = elm.0
             an.coordinate = CLLocationCoordinate2DMake(elm.3, elm.4)
             locPoints.append(an)
         }
