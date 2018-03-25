@@ -106,6 +106,18 @@ class EventsData: NSObject {
         let i = EventsData.soEventNumbers.index(of: evNumber) //the event name will be in the ith position
         return EventsData.completeSOEventList[i!]
     }
+    
+    //returns a list of teams in the given division in terms of internal numbers
+    static func divXTeams(div: Character) -> [Int] {
+        let teamInfo = DLM.dlFiles[1]
+        var divTeams: [Int] = []
+        for i in 0..<teamInfo.count {
+            if teamInfo[i][2] == Div {
+                divTeams.append(teamInfo[i][0]) //that's the internal number...
+            }
+        }
+        return divTeams
+    }
 }
 
 func stringToBool(s: String) -> Bool {
