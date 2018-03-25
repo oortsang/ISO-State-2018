@@ -9,12 +9,12 @@
 import UIKit
 import MapKit
 
-class FirstViewController: UIViewController {
+class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var map: MKMapView!
+    let locationManager = CLLocationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-
         let centerLoc = CLLocationCoordinate2DMake(40.101952, -88.227161)
         let mapSpan = MKCoordinateSpanMake(0.015, 0.015)
         let mapRegion = MKCoordinateRegion(center: centerLoc, span: mapSpan)
@@ -24,6 +24,15 @@ class FirstViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(onDownloadFinished), name: .downloadFinished, object: nil)
         
+        self.map.showsUserLocation = true
+        
+        self.locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.startUpdatingLocation()
+        }
     }
     
     @objc func onDownloadFinished() {
