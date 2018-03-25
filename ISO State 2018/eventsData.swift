@@ -26,13 +26,11 @@ class EventsData: NSObject {
     
     
     static func teamNumber() -> Int {
-        return Int(DLM.dlFiles.files[1].data[currentSchool][1])!
-    }
-    
-    //get current division as a bool: true for C, false for B
-    static func curDivC() -> Bool {
-        //return stringToBool(s: DLM.dlFiles.files[1].data[currentSchool][2])
-        return stringToBool(s: String(div))
+        if currentSchool > DLM.dlFiles.files[1].data.count {
+            print("careful!")
+        }
+        let res = Int(DLM.dlFiles.files[1].data[currentSchool][1])
+        return res!
     }
     
     //get current schoool's time block
@@ -40,8 +38,6 @@ class EventsData: NSObject {
         let teamInfo = DLM.dlFiles.files[1].data
         return Int(teamInfo[currentSchool][6])
     }
-    //completeSOEventList = ["Anatomy & Physiology", "Astronomy", "Chemistry Lab", "Disease Detectives", "Dynamic Planet", "Ecology", "Experimental Design", "Fermi Questions", "Forensics", "Game On", "Helicopters", "Herpetology", "Hovercraft", "Materials Science", "Microbe Mission", "Mission Possible", "Mousetrap Vehicle", "Optics", "Remote Sensing", "Rocks & Minerals", "Thermodynamics", "Towers", "Write It Do It"]
-    //soEventProperties = ...
     
     //fxns to return a list of events with (or without) a given property
     static func eventsThat(have: Bool, prop: Int) -> [(Int, String)] {
@@ -55,53 +51,6 @@ class EventsData: NSObject {
         return tmp
     }
     
-    static func divCEvents() -> [(Int, String)] {
-        return eventsThat(have: true, prop: 0)
-    }
-    static func divBEvents() -> [(Int, String)] {
-        return eventsThat(have: false, prop: 0)
-    }
-    static func trialEventList() -> [(Int, String)] {
-        return eventsThat(have: true, prop: 1)
-    }
-    static func testEventList() -> [(Int, String)] {
-        return eventsThat(have: true, prop: 2)
-    }
-    static func selfScheduledEventList() -> [(Int, String)] {
-        return eventsThat(have: true, prop: 3)
-    }
-    static func impoundEventList() -> [(Int, String)] {
-        return eventsThat(have: true, prop: 4)
-    }
-
-    //these fxns identify if a given event is a trial/test/self-scheduled/impound event
-    static func thisEvent(evnt: Int, has: Bool, prop: Int) -> Bool? {
-        var result: Bool? = nil //same as Optional.none
-        if (soEventProperties.count > evnt) && (soEventProperties[evnt].count > prop) {
-            result = (has == soEventProperties[evnt][prop])
-        }
-        return result
-    }
-    
-    static func isDivC(evnt: Int) -> Bool? {
-        return thisEvent(evnt: evnt, has: true, prop: 0)
-    }
-    static func isDivB(evnt: Int) -> Bool? {
-        return thisEvent(evnt: evnt, has: false, prop: 0)
-    }
-    static func isTrial(evnt: Int) -> Bool? {
-        return thisEvent(evnt: evnt, has: true, prop: 1)
-    }
-    static func isTest(evnt: Int) -> Bool? {
-        return thisEvent(evnt: evnt, has: true, prop: 2)
-    }
-    static func isSelfScheduled(evnt: Int) -> Bool? {
-        return thisEvent(evnt: evnt, has: true, prop: 3)
-    }
-    static func isImpounded(evnt: Int) -> Bool? {
-        return thisEvent(evnt: evnt, has: true, prop: 4)
-    }
-    
     static func lookupEventName(evNumber: Int) -> String! {
         let i = EventsData.soEventNumbers.index(of: evNumber) //the event name will be in the ith position
         return EventsData.completeSOEventList[i!]
@@ -109,14 +58,25 @@ class EventsData: NSObject {
     
     //returns a list of teams in the given division in terms of internal numbers
     static func divXTeams(div: Character) -> [Int] {
-        let teamInfo = DLM.dlFiles[1]
+        let teamInfo = DLM.dlFiles.files[1].data
         var divTeams: [Int] = []
         for i in 0..<teamInfo.count {
-            if teamInfo[i][2] == Div {
-                divTeams.append(teamInfo[i][0]) //that's the internal number...
+            if teamInfo[i][2].first == div {
+                divTeams.append(Int(teamInfo[i][0])!) //that's the internal number...
             }
         }
         return divTeams
+    }
+    
+    static func divXEvents(div: Character) -> [Int] {
+        let eventInfo = DLM.dlFiles.files[0].data
+        var divEvents: [Int] = []
+        for i in 0..<eventInfo.count {
+            if eventInfo[i][2].first == div {
+                divEvents.append(Int(eventInfo[i][0])!) //that's the internal number...
+            }
+        }
+        return divEvents
     }
 }
 

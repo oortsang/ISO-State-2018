@@ -90,10 +90,8 @@ class Downloadable {
     //loads contents from *.file to *.data
     func parse() {
         //first make sure everything is downloaded
-        var allDownloaded = true
         for i in 0..<fileCount {
             if self.files[i].file.count < 1 {
-                allDownloaded = false
                 //break
                 //print("\(self.fileNames[i]) is not ready to be parsed")
                 return

@@ -10,10 +10,43 @@ import UIKit
 import CoreData
 
 class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
-    
     @IBOutlet weak var schoolPicker: UIPickerView!
     
+    var numDivB: Int = 0
+    var officialTeamNums: [Int] = []
+    var officialTeamNames: [String] = []
+
+    func updateValues() {
+        let teamsData = DLM.dlFiles.files[1].data
+        let internalTeamNumbers = (getCol(array: teamsData, col: 0) as! [String]).map{Int($0)!}
+        let divBTeams = EventsData.divXTeams(div: "B")
+        numDivB = divBTeams.count
+        
+        //unrigorous... but assume internal team numbering is 1-indexed and uninterrupted
+        //var actualIndices = Array(0..<internalTeamNumbers.count).map{ $0 - (($0<numDivB) ? 0 : numDivB)}
+        
+        
+        //var actualIndices: [Int] = [] //for going from row-entry-order to database-order
+        //for division B events
+        //yeah... this isn't efficient but there's not much time
+        /*for i in 0..<numDivB {
+            actualIndices.append(internalTeamNumbers.index(of: i)!)
+        }
+        for i in 0..<(teamsData.count - numDivB) {
+            actualIndices.append(internalTeamNumbers.index(of: i)!)
+        }*/
+        //officialTeamNums  = actualIndices.map{EventsData.officialNumbers[$0]}
+        //officialTeamNames = actualIndices.map{EventsData.roster[$0]}
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.updateValues()
+    }
+    
     override func viewDidLoad() {
+        self.updateValues()
         super.viewDidLoad()
         schoolPicker.dataSource = self
         schoolPicker.delegate = self
@@ -26,33 +59,41 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     func numberOfComponents(in eventPicker: UIPickerView) -> Int {
         return 1
     }
+    
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        //return EventsData.roster.count //mixes B and C
-        let divTeams = EventsData.divXTeams(EventsData.div) //retrieve the appropriate team list
-        return divTeams.count
+        //let divTeams = EventsData.divXTeams(div: EventsData.div) //retrieve the appropriate team list
+        return EventsData.roster.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         //return String("(\(EventsData.teamNumber())) \(EventsData.roster[row])")
         //get the internal team number corresponding to the entry in question
-        let divTeams = EventsData.divXTeams(EventsData.div)
+        /*let divTeams = EventsData.divXTeams(div: EventsData.div)
         let internalTeamNum = divTeams[row]
         
         //want to get the official number now
         //first we need to find the actual index (rather than the internal one)
-        let teamsData = DLM.dlFiles[1].data
-        let internalNumberList = getCol(array: teamsData, col: 0)!.map{Int($0)!}
+        let teamsData = DLM.dlFiles.files[1].data
+        let internalNumberList = (getCol(array: teamsData, col: 0) as! [String]).map{Int($0)!}
         let actualIndex = internalNumberList.index(of: internalTeamNum)!
         let officialTeamNum = EventsData.officialNumbers[actualIndex]
         
         let teamNumStr = "(\(officialTeamNum)\(EventsData.div)) "
         let teamEntry = teamNumStr + EventsData.roster[actualIndex]
-        return teamEntry
+        return teamEntry*/
+        
+        //let teamNumStr = "(\(officialTeamNums[row])\(row<numDivB ? "B" : "C")) "
+        //return teamNumStr + officialTeamNames[row]
+        
+        let teamNumStr = "(\(EventsData.officialNumbers[row])\(row<numDivB ? "B" : "C")) "
+        return teamNumStr + EventsData.roster[row]
+        
     }
     
     @IBAction func doneButton(_ sender: Any) {
         let row = schoolPicker.selectedRow(inComponent: 0)
-        EventsData.currentSchool = row
+        EventsData.currentSchool = row+1
+        EventsData.div = row<numDivB ? "B" : "C"
         saveSelectedSchool(currentSchool: row) //save
         
         //sendSchoolNotificationToUpdate()

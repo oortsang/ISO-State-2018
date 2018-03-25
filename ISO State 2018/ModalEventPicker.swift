@@ -12,21 +12,36 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
 
     @IBOutlet weak var eventPicker: UIPickerView!
     
+    var divTeams: [Int] = []
+    
+    func updateVals() {
+        self.divTeams = EventsData.divXEvents(div: EventsData.div)
+    }
+    
     override func viewDidLoad() {
+        self.updateVals()
         super.viewDidLoad()
         eventPicker.dataSource = self
         eventPicker.delegate = self
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.updateVals()
+        super.viewDidAppear(animated)
+    }
+    
 
     func numberOfComponents(in eventPicker: UIPickerView) -> Int {
         return 1
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        //return EventsData.completeList[component]
-        return EventsData.completeSOEventList.count
+        return self.divTeams.count
+        //return EventsData.completeSOEventList.count
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return EventsData.completeSOEventList[row]
+        let internalNum = self.divTeams[row]
+        let fakeIndex = internalNum - 1 //unrigorous
+        return EventsData.completeSOEventList[fakeIndex]
     }
     
     override func didReceiveMemoryWarning() {

@@ -55,8 +55,6 @@ class TableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-        // This might be sketchy
-        let show = EventsData.selectedList
         let eventNumber = EventsData.selectedList[indexPath.row] // UPDATE FOR DIV B / C
         cell.textLabel!.text = EventsData.lookupEventName(evNumber: eventNumber)
         return cell
