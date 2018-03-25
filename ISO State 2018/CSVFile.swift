@@ -60,10 +60,11 @@ class CSVFile {
     //2D array gets dumped into the class
     func parse() {
         if self.file == "" {
+            print("Empty File!")
             return
         }
         let rows: [String] = file.components(separatedBy: "\n")
-        if rows.count > 1 { //want to make sure it's not just an empty string
+        if rows.count > 1 { //want to make sure it's not just an empty file
             var data: [[String]] = []
             for i in 1..<rows.count {
                 let content = rows[i].components(separatedBy: ",")
@@ -173,15 +174,15 @@ class CSVFile {
         let task = URLSession.shared.downloadTask(with: url!) { loc, resp, error in
             if let error = error {
                 print("Error: \(error); not updated")
-                DLM.dlFiles.downloadInProgress -= 1
+                //DLM.dlFiles.downloadInProgress -= 1
                 return
             }
             guard let httpResponse = resp as? HTTPURLResponse,
                 (200...299).contains(httpResponse.statusCode) else {
-                DLM.dlFiles.downloadInProgress -= 1
+                //DLM.dlFiles.downloadInProgress -= 1
                 return
             }
-            DLM.dlFiles.downloadInProgress -= 1 //keep track instantly...
+            //DLM.dlFiles.downloadInProgress -= 1 //keep track instantly...
             
             guard let data = try? Data(contentsOf: loc!) , error == nil else {return}
             //self.file = (String(data: data, encoding: .utf8))!

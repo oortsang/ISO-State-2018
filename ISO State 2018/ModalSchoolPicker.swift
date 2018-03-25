@@ -21,7 +21,7 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         let internalTeamNumbers = (getCol(array: teamsData, col: 0) as! [String]).map{Int($0)!}
         let divBTeams = EventsData.divXTeams(div: "B")
         numDivB = divBTeams.count
-        
+        print("\(EventsData.roster) teams loaded")
         //unrigorous... but assume internal team numbering is 1-indexed and uninterrupted
         //var actualIndices = Array(0..<internalTeamNumbers.count).map{ $0 - (($0<numDivB) ? 0 : numDivB)}
         
@@ -85,15 +85,21 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         //let teamNumStr = "(\(officialTeamNums[row])\(row<numDivB ? "B" : "C")) "
         //return teamNumStr + officialTeamNames[row]
         
-        let teamNumStr = "(\(EventsData.officialNumbers[row])\(row<numDivB ? "B" : "C")) "
-        return teamNumStr + EventsData.roster[row]
+        let realNum = row
+        let teamNumStr = "(\(EventsData.officialNumbers[realNum])\(row<numDivB ? "B" : "C")) "
+        return teamNumStr + EventsData.roster[realNum]
         
     }
     
     @IBAction func doneButton(_ sender: Any) {
         let row = schoolPicker.selectedRow(inComponent: 0)
-        EventsData.currentSchool = row+1
+        EventsData.currentSchool = row
         EventsData.div = row<numDivB ? "B" : "C"
+        
+        print("Selected Division: \(EventsData.div)")
+        print("Internal Number: \(EventsData.currentSchool)")
+        print("Official Number: \(EventsData.officialNumbers[row])")
+        
         saveSelectedSchool(currentSchool: row) //save
         
         //sendSchoolNotificationToUpdate()

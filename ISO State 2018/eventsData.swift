@@ -26,7 +26,7 @@ class EventsData: NSObject {
     
     
     static func teamNumber() -> Int {
-        if currentSchool > DLM.dlFiles.files[1].data.count {
+        if currentSchool >= DLM.dlFiles.files[1].data.count {
             print("careful!")
         }
         let res = Int(DLM.dlFiles.files[1].data[currentSchool][1])

@@ -12,7 +12,7 @@ class Downloadable {
     let fileCount = 7
     let files: [CSVFile] //initialized in the Downloadable init() function
     let fileNames = ["soevents", "teams", "tests", "builds", "impounds",  "scheduledevents", "locations"]
-    var downloadInProgress = 0
+    //var downloadInProgress = 0
 
     //load from disk
     func load() {
@@ -28,13 +28,13 @@ class Downloadable {
     //start the downloads
     func beginUpdate() {
         //don't start if a download is already in progress
-        if self.downloadInProgress != 0 {
+        /*if self.downloadInProgress != 0 {
             //print("Download already in progress!")
             return
         } else {
             //print("Download NOT already in progress!!!! How shocking!")
-        }
-        self.downloadInProgress += fileCount
+        }*/
+        //self.downloadInProgress += fileCount
         //save each file
         for i in 0..<self.fileCount {
             self.files[i].downloadFile(sourceURL: CSVFile.addressesList[i])
@@ -67,7 +67,7 @@ class Downloadable {
     func manualStart() {
         self.load()
         self.beginUpdate()
-        self.downloadInProgress = 0
+        //self.downloadInProgress = 0
     }
     
     //initialize the files
@@ -78,11 +78,11 @@ class Downloadable {
             tmp.append(CSVFile())
             tmp[i].whichFile = i
         }
-        files = tmp
-        self.load()
-        self.beginUpdate()
+        self.files = tmp
+        //self.load()
+        //self.beginUpdate()
         //Notification center hasn't started up yet
-        self.downloadInProgress = 0
+        //self.downloadInProgress = 0
         
     }
     

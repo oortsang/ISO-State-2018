@@ -52,9 +52,9 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         recognizer.delegate = self as? UIGestureRecognizerDelegate
         schedView.addGestureRecognizer(recognizer)
         
-        if DLM.dlFiles.downloadInProgress == 0 {
+        //if DLM.dlFiles.downloadInProgress == 0 {
             DLM.dlFiles.finishUpdate()
-        }
+        //}
     }
     
     //handle taps on the UITableView
@@ -113,7 +113,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
                     currentHomeroomLocCode = -1
                 }
                 self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])"
-                print("Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])")
+                //print("Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])")
                 self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
                 EventsData.currentHomeroomLocCode = currentHomeroomLocCode
                 saveSelectedSchool(currentSchool: cNum)
