@@ -100,7 +100,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
             let cNum = EventsData.currentSchool
             var currentHomeroom: String
             var currentHomeroomLocCode: Int
-            if DLM.dlFiles.files[1].data.count>1 && EventsData.roster.count > 0 {
+            if DLM.dlFiles.files[1].data.count>0 && EventsData.roster.count > 0 {
                 //print("Homeroom file is done")
                 let homeroomNames = getCol(array:DLM.dlFiles.files[1].data, col:4) as! [String]
                 let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[1].data, col:5) as! [String]).map{Locs.locCoder(input: $0)}
@@ -113,6 +113,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
                     currentHomeroomLocCode = -1
                 }
                 self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])"
+                print("Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])")
                 self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
                 EventsData.currentHomeroomLocCode = currentHomeroomLocCode
                 saveSelectedSchool(currentSchool: cNum)

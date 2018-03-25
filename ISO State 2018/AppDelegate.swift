@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             statusBar.backgroundColor = UIColor(red: 0.5, green: 0, blue: 0, alpha: 1)
         }
         UIApplication.shared.statusBarStyle = .lightContent
-        //DLM.dlFiles.manualStart()
+        DLM.dlFiles.manualStart()
         return true
     }
 

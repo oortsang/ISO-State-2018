@@ -41,6 +41,9 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         let internalNum = self.divTeams[row]
         let fakeIndex = internalNum - 1 //unrigorous
+        if fakeIndex >= EventsData.completeSOEventList.count {
+            return nil
+        }
         return EventsData.completeSOEventList[fakeIndex]
     }
     
