@@ -152,7 +152,9 @@ class Downloadable {
         //comes directly from file 5, the scheduled events
         for i in 0..<self.files[5].data.count {
             let info = self.files[5].data[i]
-            let (evName, evTime, date, loc) = (info[0], info[1], info[2], info[3])
+            //let (evName, evTime, date, loc) = (info[0], info[1], info[2], info[3])
+            let (evName, date, loc) = (info[0], info[2], info[3])
+            let evTime = ScheduleData.formatTime(time: info[1])!
             let locCode = Int(info[4]) ?? -1
             let entry = EventLabel(name: evName, loc: loc, locCode: locCode, time: evTime, date: date)
             tmp.append(entry)

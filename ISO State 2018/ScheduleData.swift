@@ -78,10 +78,12 @@ class ScheduleData {
         }
         
         //in case time is unknown
-        if (ev1.time == "?" || ev2.time == "?") {
+        if (ev1.time == "?" || ev1.time == "" || ev2.time == "?" || ev2.time == "") {
             return true
         }
-        let (t1, t2) = (ev1.getTime()!, ev2.getTime()!)
+        var (t1, t2) = (completeTime(time:  ev1.time), completeTime(time: ev2.time))
+        //fill in the blanks
+        
         let (s1, s2) = (t1.index(of: " ")!, t2.index(of: " ")!)
         let (mm1, mm2) = (t1.index(of: "M")!, t2.index(of: "M")!)
         let (amInd1, amInd2) = (t1.index(mm1, offsetBy: -1), t2.index(mm2, offsetBy: -1))
@@ -108,62 +110,60 @@ class ScheduleData {
         return ev1.name < ev2.name
     }
     
-    static func stringyTime(hour: Int, mins: Int, ampm: Character) -> String {
+    //turn time into a string
+    static func stringifyTime(hour: Int, mins: Int, ampm: Character ) -> String {
         let minString = ((mins<10) ? "0" : "") + String(mins) //add an extra 0 for 1-digit
         let hourString = String(hour)
         let output = "\(hourString):\(minString) \(ampm)M"
         return output
     }
     
-    //helper function just for string processing
-    static func formatTime(time: String, duration: Int = 50) -> String! {
+    static func completeTime(time: String, duration: Int = 0) -> String {
+        var ampm: Character = " "
         var result = ""
-        var stdTime = "" //start time but in standardized formatting (i.e. 4:20 PM)
-        if time == "" || time == "?" { //don't know
-            result = "?"
-        } else if time.count > 8 { //don't change
-            result = time
-        } else { //need to finish formatting
-            var ampm: Character = " "
-            //determine whether it's AM or PM for various formats
-            if time.contains("M") {
-                let m = time.index(time.index(of: "M")!, offsetBy: -1)
-                ampm = String(time[m]).first!
-            } else { // infer
-                var hours: Int = 0
-                if time.contains(":") {
-                    let colon = time.index(of: ":")!
-                    hours = Int(String(time[..<colon]))!
-                } else { //only a single number
-                    hours = Int(String(time))!
-                }
-                ampm = (hours>=7) ? "A" : "P"
-            }
-            //standardize and put into "stdTime"
-            var startHour: Int, startMins: Int
-            if time.contains(":") { //if it's written like 9:00 as opposed to 9
+        //determine whether it's AM or PM for various formats
+        if time == "" {
+            return ""
+        } else if time.contains("M") {
+            let m = time.index(time.index(of: "M")!, offsetBy: -1)
+            ampm = String(time[m]).first!
+        } else { // infer
+            var hours: Int = 0
+            if time.contains(":") {
                 let colon = time.index(of: ":")!
-                let cHours = Int(String(time[..<colon]))! //extract current hour
-                
-                let startInd = time.index(colon, offsetBy: 1)
-                let endInd = time.index(startInd, offsetBy: 2)
-                let cMins = Int(String(time[startInd..<endInd]))! //get first two characters after the ":"
-                
-                startHour = cHours
-                startMins = cMins
-            } else { //:00 inferred
-                var cHour = 0
-                if time.contains(" ") {
-                    let space = time.index(of: " ")!
-                    cHour = Int(String(time[..<space]))!
-                } else { //just a number
-                    cHour = Int(String(time))!
-                }
-                startHour = cHour
-                startMins = 0
+                hours = Int(String(time[..<colon]))!
+            } else { //only a single number
+                hours = Int(String(time))!
             }
-            stdTime = stringyTime(hour: startHour, mins: startMins, ampm: ampm)
+            ampm = (hours>=7) ? "A" : "P"
+        }
+        //standardize and put into "stdTime"
+        var startHour: Int, startMins: Int
+        if time.contains(":") { //if it's written like 9:00 as opposed to 9
+            let colon = time.index(of: ":")!
+            let cHours = Int(String(time[..<colon]))! //extract current hour
             
+            let startInd = time.index(colon, offsetBy: 1)
+            let endInd = time.index(startInd, offsetBy: 2)
+            let cMins = Int(String(time[startInd..<endInd]))! //get first two characters after the ":"
+            
+            startHour = cHours
+            startMins = cMins
+        } else { //:00 inferred
+            var cHour = 0
+            if time.contains(" ") {
+                let space = time.index(of: " ")!
+                cHour = Int(String(time[..<space]))!
+            } else { //just a number
+                cHour = Int(String(time))!
+            }
+            startHour = cHour
+            startMins = 0
+        }
+        let stdTime = stringifyTime(hour: startHour, mins: startMins, ampm: ampm)
+        result = stdTime
+        
+        if duration != 0 {
             //find the end time of the interval
             let mins = duration + startMins
             
@@ -171,7 +171,7 @@ class ScheduleData {
             let endMins = mins % 60
             
             //finish the interval
-            let endTime = stringyTime(hour: endHour, mins: endMins, ampm: ampm)
+            let endTime = stringifyTime(hour: endHour, mins: endMins, ampm: ampm)
             if duration == 0 {
                 result = stdTime
             } else if endHour >= 12 { //need to switch AM to PM or PM to AM //assume duration < 24 hours
@@ -181,6 +181,21 @@ class ScheduleData {
                 let tmpTime = String(stdTime[..<space]) //looks something like "9:00" with no " AM"
                 result = "\(tmpTime) - \(endTime)"
             }
+        }
+        return result
+    }
+    
+
+    //helper function just for string processing
+    static func formatTime(time: String, duration: Int = 50) -> String {
+        var result = ""
+        var stdTime = "" //start time but in standardized formatting (i.e. 4:20 PM)
+        if time == "" || time == "?" { //don't know
+            result = "?"
+        } else if time.count > 8 { //don't change
+            result = time
+        } else { //need to finish formatting
+            result = completeTime(time: time)
         }
         return result
     }

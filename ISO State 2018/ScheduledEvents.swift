@@ -13,33 +13,64 @@ class SchedViewController: UIViewController, UITableViewDataSource, UITableViewD
 //class SchedViewController: UITableViewController {
     @IBOutlet weak var SchedView: UITableView!
     
-    let list = ["cycle", "elcyc"]
+    var datedSched: [(String, [EventLabel])] = []
+    
+    //reorganizes the events
+    func sortByDate() {
+        var dates: [String] = []
+        //get the dates involved
+        for ev in ScheduleData.schedEvents {
+            if !(dates.contains(ev.date) ) {
+                dates.append(ev.date)
+            }
+        }
+        //sort by date
+        var tmp: [(String, [EventLabel])] = []
+        for date in dates {
+            var relevantEvents: [EventLabel] = [] //events on the given day
+            for ev in ScheduleData.schedEvents {
+                //if the current event is on the date in question
+                if ev.date == date {
+                    relevantEvents.append(ev)
+                }
+            }
+            relevantEvents = ScheduleData.orderEvents(eventList: relevantEvents)
+            tmp.append((date, relevantEvents))
+        }
+        self.datedSched = tmp
+    }
     
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        //return 1
+        self.sortByDate()
+        return self.datedSched.count
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(ScheduleData.schedEvents)
-        return ScheduleData.schedEvents.count
+        return self.datedSched[section].1.count
         //return list.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "schedule", for: indexPath)
-        print(ScheduleData.schedEvents)
-        cell = (ScheduleData.schedEvents[indexPath.row] as EventLabel).printCell(cell: cell)
+        
+        cell = (self.datedSched[indexPath.section].1[indexPath.row] as EventLabel).printCell(cell: cell)
         //cell.textLabel?.text = list[indexPath.row]
         return cell
     }
     
+    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return self.datedSched[section].0
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.sortByDate()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.sortByDate()
         SchedView.reloadData()
     }
     
