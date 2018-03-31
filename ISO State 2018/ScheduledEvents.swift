@@ -24,6 +24,7 @@ class SchedViewController: UIViewController, UITableViewDataSource, UITableViewD
                 dates.append(ev.date)
             }
         }
+        dates = dates.sorted()
         //sort by date
         var tmp: [(String, [EventLabel])] = []
         for date in dates {
@@ -59,8 +60,15 @@ class SchedViewController: UIViewController, UITableViewDataSource, UITableViewD
         return cell
     }
     
-    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return self.datedSched[section].0
+    }
+    
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.text = self.datedSched[section].0
+        label.backgroundColor = UIColor.lightGray
+        return label
     }
     
     override func viewDidAppear(_ animated: Bool) {

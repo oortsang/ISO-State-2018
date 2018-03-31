@@ -116,7 +116,7 @@ class Downloadable {
             
             let tmpTime = info[4+cTB!]
             let dur = (info[2]=="") ? 50 : Int(info[2])! //timeblock events are 50 minutes unless otherwise specified
-            let evTime = ScheduleData.formatTime(time: tmpTime, duration: dur)!
+            let evTime = ScheduleData.formatTime(time: tmpTime, duration: dur)
             let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }
@@ -128,7 +128,7 @@ class Downloadable {
             let locCode = Int(info[4]) ?? -1
             let ind = 4+EventsData.teamNumber()
             let tmpTime = ind>=info.count ? "?" : info[ind] //not pretty yet
-            let evTime = ScheduleData.formatTime(time: tmpTime, duration: Int(info[2])!)!
+            let evTime = ScheduleData.formatTime(time: tmpTime, duration: Int(info[2])!)
             let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }
@@ -139,7 +139,7 @@ class Downloadable {
             let (evName, loc) = (info[1], info[3])
             let locCode = Int(info[4]) ?? -1
             let dur = (info[2]=="") ? 60 : Int(info[2])! //putting default duration of impound as 1 hour
-            let evTime = ScheduleData.formatTime(time: info[5], duration: dur)!
+            let evTime = ScheduleData.formatTime(time: info[5], duration: dur)
             let evTitle = "Impound for \(evName)"
             let entry = EventLabel(num: evNum, name: evTitle, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
@@ -154,7 +154,7 @@ class Downloadable {
             let info = self.files[5].data[i]
             //let (evName, evTime, date, loc) = (info[0], info[1], info[2], info[3])
             let (evName, date, loc) = (info[0], info[2], info[3])
-            let evTime = ScheduleData.formatTime(time: info[1])!
+            let evTime = ScheduleData.formatTime(time: info[1])
             let locCode = Int(info[4]) ?? -1
             let entry = EventLabel(name: evName, loc: loc, locCode: locCode, time: evTime, date: date)
             tmp.append(entry)

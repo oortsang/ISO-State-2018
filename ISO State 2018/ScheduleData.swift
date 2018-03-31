@@ -81,7 +81,7 @@ class ScheduleData {
         if (ev1.time == "?" || ev1.time == "" || ev2.time == "?" || ev2.time == "") {
             return true
         }
-        var (t1, t2) = (completeTime(time:  ev1.time), completeTime(time: ev2.time))
+        var (t1, t2) = (formatTime(time:  ev1.time), formatTime(time: ev2.time))
         //fill in the blanks
         
         let (s1, s2) = (t1.index(of: " ")!, t2.index(of: " ")!)
