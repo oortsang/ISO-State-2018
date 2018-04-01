@@ -37,7 +37,7 @@ class ThirdViewController: UIViewController {
     }
     
     @IBAction func shareFunc(_ sender: Any) {
-        guard webview.url == nil else {
+        guard webview.url != nil else {
             return
         }
         UIApplication.shared.open(webview.url!)
