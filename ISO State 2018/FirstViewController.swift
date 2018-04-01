@@ -36,7 +36,9 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @objc func onDownloadFinished() {
-        reloadPoints()
+        DispatchQueue.main.async {
+            self.reloadPoints()
+        }
     }
 
     func reloadPoints() {

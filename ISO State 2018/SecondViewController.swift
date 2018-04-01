@@ -15,6 +15,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var homeroomLocation: UITextField!
     @IBOutlet weak var schedView: UITableView!
 
+    
     //called every time the view is brought to view
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -31,7 +32,9 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         updateSchoolAndTable()
         
-
+        schoolTitle.addTarget(self, action: #selector(schoolTap), for: UIControlEvents.touchDown)
+        homeroomLocation.addTarget(self, action: #selector(schoolTap), for: UIControlEvents.touchDown)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(onDownloadSummoned), name: .downloadFinished, object: nil)
         
         //extra detail by tapping on a cell
@@ -39,9 +42,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         recognizer.delegate = self as? UIGestureRecognizerDelegate
         schedView.addGestureRecognizer(recognizer)
         
-        //if DLM.dlFiles.downloadInProgress == 0 {
-            DLM.dlFiles.finishUpdate()
-        //}
+        DLM.dlFiles.finishUpdate()
     }
     
     //handle taps on the UITableView
@@ -67,6 +68,26 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    //displays a message box whenever the homeroom/team info area is tapped
+    @objc func schoolTap(textField: UITextField) {
+        //print(indexPath)
+        //modify when cells get prettier!
+        let school = EventsData.roster[EventsData.currentSchool]
+        let teamNumber = EventsData.officialNumbers[EventsData.currentSchool]
+        let team = "\(teamNumber)\(EventsData.div)"
+        let (homeroom, code) = EventsData.getHomeroom()
+        let title = school
+        let msg = "\n Team Number: \(team)\n\n Homeroom: \(homeroom)"
+        let alert = UIAlertController(title: title, message: msg,  preferredStyle: .alert)
+        alert.addAction(
+            UIAlertAction(title:
+                NSLocalizedString("Ok", comment: "Default action"),
+                          style: .default)
+        )
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     //on download finish
     @objc func onDownloadSummoned () {
         //print("Download ready! *** Downloads in progress: \(DLM.dlFiles.downloadInProgress)")
@@ -78,29 +99,11 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     //called by onDownloadSummoned and onViewDidAppear
     @objc func updateSchoolAndTable() {
         DispatchQueue.main.async() {
+            let (hrString, _) = EventsData.getHomeroom()
             
-            let cNum = EventsData.currentSchool
-            var currentHomeroom: String
-            var currentHomeroomLocCode: Int
-            if DLM.dlFiles.files[1].data.count>0 && EventsData.roster.count > 0 {
-                //print("Homeroom file is done")
-                let homeroomNames = getCol(array:DLM.dlFiles.files[1].data, col:4) as! [String]
-                let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[1].data, col:5) as! [String]).map{Locs.locCoder(input: $0)}
-                if homeroomNames.count > cNum && cNum >= 0 {
-                    //currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
-                    currentHomeroom = homeroomNames[cNum]
-                    currentHomeroomLocCode = homeroomLocCodes[cNum]
-                } else {
-                    currentHomeroom = "Not currently available..."
-                    currentHomeroomLocCode = -1
-                }
-                EventsData.div = DLM.dlFiles.files[1].data[cNum][2].first!
-                self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])"
-                //print("Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[cNum])")
-                self.homeroomLocation.text = "Homeroom: \(currentHomeroom)"
-                EventsData.currentHomeroomLocCode = currentHomeroomLocCode
-                saveSelectedSchool(currentSchool: cNum)
-            }
+            self.schoolTitle.text = "Viewing as: (\(EventsData.teamNumber())\(EventsData.div)) \(EventsData.roster[EventsData.currentSchool])"
+            self.homeroomLocation.text = "Homeroom: \(hrString)"
+            
             //update the table itself
             ScheduleData.reorganize()
             self.updateEvents()

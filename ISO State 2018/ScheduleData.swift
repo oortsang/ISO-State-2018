@@ -58,7 +58,7 @@ class ScheduleData {
 
     static func reorganize() {
         ScheduleData.selectedSOEvents = orderEvents(eventList: selectedSOEvents)
-        print (ScheduleData.selectedSOEvents.map{$0.time})
+        //print (ScheduleData.selectedSOEvents.map{$0.time})
     }
     
     
@@ -81,7 +81,7 @@ class ScheduleData {
         if (ev1.time == "?" || ev1.time == "" || ev2.time == "?" || ev2.time == "") {
             return true
         }
-        var (t1, t2) = (formatTime(time:  ev1.time), formatTime(time: ev2.time))
+        let (t1, t2) = (formatTime(time:  ev1.time), formatTime(time: ev2.time))
         //fill in the blanks
         
         let (s1, s2) = (t1.index(of: " ")!, t2.index(of: " ")!)
@@ -189,7 +189,6 @@ class ScheduleData {
     //helper function just for string processing
     static func formatTime(time: String, duration: Int = 50) -> String {
         var result = ""
-        var stdTime = "" //start time but in standardized formatting (i.e. 4:20 PM)
         if time == "" || time == "?" { //don't know
             result = "?"
         } else if time.count > 8 { //don't change

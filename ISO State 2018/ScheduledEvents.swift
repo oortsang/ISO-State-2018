@@ -67,7 +67,7 @@ class SchedViewController: UIViewController, UITableViewDataSource, UITableViewD
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = UILabel()
         label.text = self.datedSched[section].0
-        label.backgroundColor = UIColor.lightGray
+        label.backgroundColor = UIColor(red:0.81, green:0.81, blue: 0.81, alpha: 0.9)
         return label
     }
     
@@ -80,6 +80,34 @@ class SchedViewController: UIViewController, UITableViewDataSource, UITableViewD
         super.viewDidLoad()
         self.sortByDate()
         SchedView.reloadData()
+        
+        //extra detail by tapping on a cell
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(onTap))
+        recognizer.delegate = self as? UIGestureRecognizerDelegate
+        SchedView.addGestureRecognizer(recognizer)
+    }
+    
+    //handle taps on the UITableView
+    @objc func onTap(recognizer : UITapGestureRecognizer) {
+        //if recognizer.state == .began {
+        if recognizer.state == .ended {
+            let touchPoint = recognizer.location(in: SchedView)
+            if let indexPath = SchedView.indexPathForRow(at: touchPoint) {
+                let cell = SchedView.cellForRow(at: indexPath)
+                //print(indexPath)
+                //modify when cells get prettier!
+                let title = cell?.textLabel!.text
+                let msg = cell?.detailTextLabel!.text
+                let alert = UIAlertController(title: title, message: msg,  preferredStyle: .alert)
+                alert.addAction(
+                    UIAlertAction(title:
+                        NSLocalizedString("Ok", comment: "Default action"),
+                                  style: .default)
+                )
+                
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
     }
     
 }

@@ -17,26 +17,8 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     var officialTeamNames: [String] = []
 
     func updateValues() {
-        let teamsData = DLM.dlFiles.files[1].data
-        let internalTeamNumbers = (getCol(array: teamsData, col: 0) as! [String]).map{Int($0)!}
         let divBTeams = EventsData.divXTeams(div: "B")
-        numDivB = divBTeams.count
-        print("\(EventsData.roster) teams loaded")
-        //unrigorous... but assume internal team numbering is 1-indexed and uninterrupted
-        //var actualIndices = Array(0..<internalTeamNumbers.count).map{ $0 - (($0<numDivB) ? 0 : numDivB)}
-        
-        
-        //var actualIndices: [Int] = [] //for going from row-entry-order to database-order
-        //for division B events
-        //yeah... this isn't efficient but there's not much time
-        /*for i in 0..<numDivB {
-            actualIndices.append(internalTeamNumbers.index(of: i)!)
-        }
-        for i in 0..<(teamsData.count - numDivB) {
-            actualIndices.append(internalTeamNumbers.index(of: i)!)
-        }*/
-        //officialTeamNums  = actualIndices.map{EventsData.officialNumbers[$0]}
-        //officialTeamNames = actualIndices.map{EventsData.roster[$0]}
+        self.numDivB = divBTeams.count
     }
     
     
@@ -65,26 +47,7 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         return EventsData.roster.count
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        //return String("(\(EventsData.teamNumber())) \(EventsData.roster[row])")
-        //get the internal team number corresponding to the entry in question
-        /*let divTeams = EventsData.divXTeams(div: EventsData.div)
-        let internalTeamNum = divTeams[row]
-        
-        //want to get the official number now
-        //first we need to find the actual index (rather than the internal one)
-        let teamsData = DLM.dlFiles.files[1].data
-        let internalNumberList = (getCol(array: teamsData, col: 0) as! [String]).map{Int($0)!}
-        let actualIndex = internalNumberList.index(of: internalTeamNum)!
-        let officialTeamNum = EventsData.officialNumbers[actualIndex]
-        
-        let teamNumStr = "(\(officialTeamNum)\(EventsData.div)) "
-        let teamEntry = teamNumStr + EventsData.roster[actualIndex]
-        return teamEntry*/
-        
-        //let teamNumStr = "(\(officialTeamNums[row])\(row<numDivB ? "B" : "C")) "
-        //return teamNumStr + officialTeamNames[row]
-        
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {       
         let realNum = row
         let teamNumStr = "(\(EventsData.officialNumbers[realNum])\(row<numDivB ? "B" : "C")) "
         return teamNumStr + EventsData.roster[realNum]
@@ -104,19 +67,15 @@ class ModalSchoolPicker: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             clearEvents()
         }
         
-        print("Selected Division: \(EventsData.div)")
-        print("Internal Number: \(EventsData.currentSchool)")
-        print("Official Number: \(EventsData.officialNumbers[row])")
+        //print("Selected Division: \(EventsData.div)")
+        //print("Internal Number: \(EventsData.currentSchool)")
+        //print("Official Number: \(EventsData.officialNumbers[row])")
         
         saveSelectedSchool(currentSchool: row) //save
         
         //sendSchoolNotificationToUpdate()
         self.dismiss(animated: true, completion: nil)
     }
-    
-    /*func sendSchoolNotificationToUpdate() -> Void {
-        NotificationCenter.default.post(name: .reloadSchoolName, object: nil)
-    }*/
     
 }
 
@@ -132,7 +91,6 @@ func saveSelectedSchool(currentSchool: Int) -> Void {
     newTeam.setValue (currentSchool, forKey: "number")
     do {
         try teamContext.save()
-        //print("teamContext saved properly")
     }
     catch {
         print("Something went wrong with adding a team")

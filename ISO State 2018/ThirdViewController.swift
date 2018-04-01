@@ -31,7 +31,7 @@ class ThirdViewController: UIViewController {
     }
     
     @IBAction func ucsoFunc(_ sender: Any) {
-        let url = URL(string: "https://app.avogadro.ws/hosted")
+        let url = URL(string: "https://app.avogadro.ws/il/uiuc-state-c")
         let request = URLRequest(url: url!)
         webview.load(request)
     }
@@ -49,7 +49,6 @@ class ThirdViewController: UIViewController {
         let url = URL(string: "http://www.illinoisolympiad.org/state.html")
         let request = URLRequest(url: url!)
         webview.load(request)
-        print("asfs")
     }
         
     override func didReceiveMemoryWarning() {

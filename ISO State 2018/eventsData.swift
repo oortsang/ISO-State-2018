@@ -21,8 +21,25 @@ class EventsData: NSObject {
     static var roster: [String] = [] //load up outside
     static var officialNumbers: [Int] = [] //real official numbers
     static var currentSchool = 0 //This is actually different from the team number because of the fact that there's division B and C -- use a unique identifier internally
-    static var currentHomeroomLocCode = -1//fill externally
+    //static var currentHomeroomLocCode = -1//fill externally
     static var div: Character = "C" // "B" or "C"
+    
+    static func getHomeroom() -> (String, Int) {
+        var currentHomeroom = "Not currently available..."
+        var currentHomeroomLocCode = -1
+        if DLM.dlFiles.files[1].data.count>0 && EventsData.roster.count > 0 {
+            //print("Homeroom file is done")
+            let homeroomNames = getCol(array:DLM.dlFiles.files[1].data, col:4) as! [String]
+            let homeroomLocCodes = (getCol(array:DLM.dlFiles.files[1].data, col:5) as! [String]).map{Locs.locCoder(input: $0)}
+            if homeroomNames.count > currentSchool && currentSchool >= 0 {
+                //currentHomeroom = DLM.dlFiles.homerooms.data[sNumber]
+                currentHomeroom = homeroomNames[currentSchool]
+                currentHomeroomLocCode = homeroomLocCodes[currentSchool]
+            }
+            div = DLM.dlFiles.files[1].data[currentSchool][2].first!
+        }
+        return (currentHomeroom, currentHomeroomLocCode)
+    }
     
     
     static func teamNumber() -> Int {
