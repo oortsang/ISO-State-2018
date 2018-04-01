@@ -100,6 +100,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     //called by onDownloadSummoned and onViewDidAppear
     @objc func updateSchoolAndTable() {
         trials = EventsData.eventsThat(have: true, prop: 1).map{$0.0}
+        DLM.dlFiles.parse()
         DispatchQueue.main.async() {
             let (hrString, _) = EventsData.getHomeroom()
             

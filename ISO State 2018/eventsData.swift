@@ -151,6 +151,10 @@ func addEvent(eventNum: Int) -> Void {
     let evLabels = ScheduleData.getEventsFromNumber(evNum: eventNum)
     if evLabels.count == 0 {
         print("Couldn't add event! Maybe the files aren't available")
+        guard let i = EventsData.selectedList.index(of: eventNum) else {
+            return
+        }
+        EventsData.selectedList.remove(at: i)
         return
     } else {
         for ev in evLabels {

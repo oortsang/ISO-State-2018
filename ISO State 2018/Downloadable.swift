@@ -129,7 +129,8 @@ class Downloadable {
             let locCode = Int(info[4]) ?? -1
             let ind = 4+EventsData.teamNumber()
             let tmpTime = ind>=info.count ? "?" : info[ind] //not pretty yet
-            let evTime = ScheduleData.formatTime(time: tmpTime, duration: Int(info[2])!)
+            let duration = Int(info[2]) ?? 0
+            let evTime = ScheduleData.formatTime(time: tmpTime, duration: duration)
             let entry = EventLabel(num: evNum, name: evName, loc: loc, locCode: locCode, time: evTime)
             tmp.append(entry)
         }
