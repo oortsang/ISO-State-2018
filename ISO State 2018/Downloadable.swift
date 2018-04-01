@@ -105,15 +105,16 @@ class Downloadable {
     
     //load the scioly events from the downloaded/loaded CSVs into ScheduleData.completeSOEvents
     func prepareSOEvents() -> Void {
+        let trials = EventsData.eventsThat(have: true, prop: 1).map{$0.0}
         var tmp: [EventLabel] = []
         let cTB = EventsData.currentTimeBlock()
         //add contributions from file 2, testing events
         for i in 0..<self.files[2].data.count {
             let info = self.files[2].data[i]
             //print (info)
-            let (evNum, evName, loc) = (Int(info[0])!, info[1], info[3])
+            let (evNum, loc) = (Int(info[0])!, info[3])
+            let evName = info[1] + (trials.contains(evNum) ? " (Trial)" : "")
             let locCode = Int(info[4]) ?? -1
-            
             let tmpTime = info[4+cTB!]
             let dur = (info[2]=="") ? 50 : Int(info[2])! //timeblock events are 50 minutes unless otherwise specified
             let evTime = ScheduleData.formatTime(time: tmpTime, duration: dur)
@@ -123,8 +124,8 @@ class Downloadable {
         //add contributions from file 3, self-scheduled events
         for i in 0..<self.files[3].data.count {
             let info = self.files[3].data[i]
-            let evNum = Int(info[0])!
-            let (evName, loc) = (info[1], info[3])
+            let (evNum, loc) = (Int(info[0])!, info[3])
+            let evName = info[1] + (trials.contains(evNum) ? " (Trial)" : "")
             let locCode = Int(info[4]) ?? -1
             let ind = 4+EventsData.teamNumber()
             let tmpTime = ind>=info.count ? "?" : info[ind] //not pretty yet
@@ -135,8 +136,8 @@ class Downloadable {
         //add contributions from file 4, the impound times
         for i in 0..<self.files[4].data.count {
             let info = self.files[4].data[i]
-            let evNum = Int(info[0])!
-            let (evName, loc) = (info[1], info[3])
+            let (evNum, loc) = (Int(info[0])!, info[3])
+            let evName = info[1] + (trials.contains(evNum) ? " (Trial)" : "")
             let locCode = Int(info[4]) ?? -1
             let dur = (info[2]=="") ? 60 : Int(info[2])! //putting default duration of impound as 1 hour
             let evTime = ScheduleData.formatTime(time: info[5], duration: dur)

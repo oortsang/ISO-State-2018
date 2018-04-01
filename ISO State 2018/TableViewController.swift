@@ -9,10 +9,17 @@
 import UIKit
 
 class TableViewController: UITableViewController {
+    
+    var trials: [Int] = [] //keep a list of the events that are trials
+    
+    func updateTrialsList() {
+        self.trials = EventsData.eventsThat(have: true, prop: 1).map{$0.0}
+    }
+    
     //reload table data when it's opened
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //print(EventsData.selectedList)
+        updateTrialsList()
         reloadTableData()
     }
     
@@ -25,6 +32,7 @@ class TableViewController: UITableViewController {
         self.navigationItem.rightBarButtonItems = [edit, space, clear]
         self.navigationItem.title = "Choose Events"
         //print(EventsData.list)
+        updateTrialsList()
         loadEvents()
         self.cleanDuplicates()
     }
@@ -56,7 +64,11 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
         let eventNumber = EventsData.selectedList[indexPath.row] // UPDATE FOR DIV B / C
-        cell.textLabel!.text = EventsData.lookupEventName(evNumber: eventNumber)
+        var eventTitle = EventsData.lookupEventName(evNumber: eventNumber)!
+        if (self.trials.contains(eventNumber)) {
+            eventTitle += " (Trial)"
+        }
+        cell.textLabel!.text = eventTitle
         return cell
     }
     

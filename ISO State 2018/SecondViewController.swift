@@ -15,6 +15,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var homeroomLocation: UITextField!
     @IBOutlet weak var schedView: UITableView!
 
+    var trials: [Int] = []
     
     //called every time the view is brought to view
     override func viewDidAppear(_ animated: Bool) {
@@ -98,6 +99,7 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     //update the text to reflect current team set
     //called by onDownloadSummoned and onViewDidAppear
     @objc func updateSchoolAndTable() {
+        trials = EventsData.eventsThat(have: true, prop: 1).map{$0.0}
         DispatchQueue.main.async() {
             let (hrString, _) = EventsData.getHomeroom()
             

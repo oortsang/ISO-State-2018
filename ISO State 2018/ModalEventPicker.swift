@@ -13,9 +13,11 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
     @IBOutlet weak var eventPicker: UIPickerView!
     
     var divTeams: [Int] = []
+    var trials: [Int] = []
     
     func updateVals() {
         self.divTeams = EventsData.divXEvents(div: EventsData.div)
+        self.trials = EventsData.eventsThat(have: true, prop: 1).map{$0.0}
     }
     
     override func viewDidLoad() {
@@ -44,7 +46,13 @@ class ModalEventPicker: UIViewController, UIPickerViewDelegate, UIPickerViewData
         if fakeIndex >= EventsData.completeSOEventList.count {
             return nil
         }
-        return EventsData.completeSOEventList[fakeIndex]
+        
+        var eventTitle = EventsData.completeSOEventList[fakeIndex]
+        
+        if self.trials.contains(row) {
+            eventTitle += " (Trial)"
+        }
+        return eventTitle
     }
     
     override func didReceiveMemoryWarning() {
