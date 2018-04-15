@@ -14,7 +14,7 @@ Internal Number,Name,Division,Trial?,Time block?,Self-Scheduled?,Impounded?
 13,Hovercraft,C,,y,n,y
 14,Materials Science,C,,y,,
 15,Microbe Mission,C,,y,,
-16,Mission Possible,C,,,y,y
+16,Mission Possible,C,,,y,
 17,Mousetrap Vehicle,C,,,y,y
 18,Optics,C,,y,n,n
 19,Remote Sensing,C,,y,,
@@ -46,7 +46,7 @@ Internal Number,Name,Division,Trial?,Time block?,Self-Scheduled?,Impounded?
 45,Rocks & Minerals,B,,y,,
 46,Roller Coaster,B,,,y,y
 47,Solar System,B,,y,,y
-48,Thermodynamics,B,,y,,
+48,Thermodynamics,B,,y,,y
 49,Towers,B,,,y,n
 50,Wright Stuff,B,,,y,n
 51,Write It Do It,B,,y,,

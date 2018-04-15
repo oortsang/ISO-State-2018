@@ -1,4 +1,11 @@
 Internal number,Official Team Number,Division,Team Name,Homeroom name,Homeroom location code,Time block
-0,1,B,Sample MS,Somewhere else,,1
-1,1,C,Sample HS,Somewhere,,1
-2,2,C,Sample HS JV,Somewhere green,,1
+0,1,B,Middle School Teams 1-10,Unavailable,-1,1
+1,,,Middle School Teams 11-20,Unavailable,-1,2
+2,,,Middle School Teams 21-30,Unavailable,-1,3
+3,,,Middle School Teams 31-40,Unavailable,-1,4
+4,,,Middle School Teams 41-45,Unavailable,-1,5
+5,1,C,High School Teams 1-10,Unavailable,-1,1
+6,10,C,High School Teams 11-20,Unavailable,-1,2
+7,20,C,High School Teams 21-30,Unavailable,-1,3
+8,30,C,High School Teams 31-40,Unavailable,-1,4
+9,40,C,High School Teams 41-45,Unavailable,-1,5
